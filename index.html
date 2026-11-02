@@ -342,7 +342,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     pBest.id='bestText';pBest.textContent=bestText();
     var single=document.createElement('button');single.className='game-btn btn-primary';single.style.cssText='font-size:15px;padding:11px 28px;margin-bottom:10px;';single.textContent='CHƠI NGAY';
     single.onclick=function(){sClick();startGame();};
-    d.appendChild(ic);d.appendChild(h);d.appendChild(p);d.appendChild(pRank);d.appendChild(pBest);var eff=(meta.last===todayKey()||meta.last===dayKey(new Date(Date.now()-864e5)))?meta.streak:0,pS=document.createElement('p');pS.style.cssText='color:#ea580c;font-size:11px;font-weight:600;margin:0 0 8px;';pS.textContent='Chuỗi: '+eff+' ngày (kỷ lục '+meta.best+') · Khiên '+meta.items.shield+' · 50/50 '+meta.items.half+' · +4 giây '+meta.items.freeze+' · Xu '+meta.coins;d.appendChild(pS);var sv=getSave();if(sv&&sv.level>=25){var rb=document.createElement('button');rb.className='game-btn btn-win';rb.style.cssText='font-size:14px;padding:10px 24px;margin:0 6px 10px 0;';rb.textContent='TIẾP TỤC cấp '+(sv.level+1);rb.onclick=function(){sClick();startGame(sv);};d.appendChild(rb);}d.appendChild(single);var sbt=document.createElement('button');sbt.className='game-btn btn-ghost';sbt.style.cssText='font-size:15px;padding:11px 20px;margin:0 0 10px 6px;';sbt.textContent='⚙ CÀI ĐẶT';sbt.onclick=function(){sClick();showSettings();};d.appendChild(sbt);d.appendChild(modeRow());
+    d.appendChild(ic);d.appendChild(h);d.appendChild(p);d.appendChild(pRank);d.appendChild(pBest);var eff=(meta.last===todayKey()||meta.last===dayKey(new Date(Date.now()-864e5)))?meta.streak:0,pS=document.createElement('p');pS.style.cssText='color:#ea580c;font-size:11px;font-weight:600;margin:0 0 8px;';pS.textContent='Chuỗi: '+eff+' ngày (kỷ lục '+meta.best+') · Khiên '+meta.items.shield+' · 50/50 '+meta.items.half+' · +4 giây '+meta.items.freeze+' · Xu '+meta.coins;d.appendChild(pS);var sv=getSave();if(sv&&sv.level>=25){var rb=document.createElement('button');rb.className='game-btn btn-win';rb.style.cssText='font-size:14px;padding:10px 24px;margin:0 6px 10px 0;';rb.textContent='TIẾP TỤC cấp '+(sv.level+1);rb.onclick=function(){sClick();startGame(sv);};d.appendChild(rb);}d.appendChild(single);var sbt=document.createElement('button');sbt.id='vSetBtn';sbt.className='game-btn btn-ghost';sbt.style.cssText='font-size:15px;padding:11px 20px;margin:0 0 10px 6px;';var h3=sv&&sv.level>=25;sbt.textContent=h3?'⚙':'⚙ CÀI ĐẶT';sbt.title='Cài đặt';sbt.setAttribute('aria-label','Cài đặt');if(h3){rb.style.padding='10px 14px';single.style.padding='11px 18px';sbt.style.padding='11px 14px';}sbt.onclick=function(){sClick();showSettings();};d.appendChild(sbt);d.appendChild(modeRow());
     var stTitle=document.createElement('div');stTitle.style.cssText='font-size:13px;font-weight:600;color:#0891b2;margin-bottom:2px;';stTitle.textContent='THỐNG KÊ CÁ NHÂN';
     var stWrap=document.createElement('div');stWrap.innerHTML=statsGrid();
     d.appendChild(stTitle);d.appendChild(stWrap);
@@ -1348,7 +1348,7 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
   var foot=document.createElement('div');foot.style.cssText='text-align:center;margin-top:16px;font-size:11px;color:#64748b;line-height:2;';
   INFO_TABS.forEach(function(t,i){var a=document.createElement('button');a.className='game-btn btn-sm';a.style.cssText='margin:2px;padding:4px 10px;font-size:11px;';a.textContent=t[1];a.onclick=function(){sClick();showInfo(t[0]);};foot.appendChild(a);});
   var cp=document.createElement('div');cp.textContent='© '+new Date().getFullYear()+' '+SITE_NAME;foot.appendChild(cp);msg.parentNode.appendChild(foot);
-  var _rs0=rstart;rstart=function(){_rs0();var d=area.firstChild;if(!d||!d.querySelector('#bestText'))return;var b=mkBtn('📖 Hướng dẫn chơi','btn-ghost',function(){sClick();showInfo('guide');});b.style.display='block';b.style.margin='6px auto';var p0=d.querySelector('.btn-primary');if(p0&&p0.nextSibling)d.insertBefore(b,p0.nextSibling);else d.appendChild(b);};
+  var _rs0=rstart;rstart=function(){_rs0();var d=area.firstChild;if(!d||!d.querySelector('#bestText'))return;var b=mkBtn('📖 Hướng dẫn chơi','btn-ghost',function(){sClick();showInfo('guide');});b.style.display='block';b.style.margin='6px auto';var p0=d.querySelector('#vSetBtn')||d.querySelector('.btn-primary');if(p0&&p0.nextSibling)d.insertBefore(b,p0.nextSibling);else d.appendChild(b);};
   // ===== v9: sửa lỗi + 10 tính năng mới =====
   var X={skill:{},revDay:null,theme:'',owned:{},cb:0,fact:1,c:{}},XK='voly_x_v1';
   try{var _x=JSON.parse(localStorage.getItem(XK)||'{}');if(_x&&typeof _x==='object')Object.keys(_x).forEach(function(k){X[k]=_x[k];});}catch(e){}
@@ -2006,7 +2006,7 @@ Quốc tế Phụ nữ|Ngày 8/3 tôn vinh phụ nữ trên toàn thế giới.
 Giáng sinh|Giáng sinh 25/12 kỷ niệm ngày sinh của Chúa Giêsu.
 Ngày Phụ nữ Việt Nam|Ngày 20/10 là Ngày Phụ nữ Việt Nam, kỷ niệm thành lập Hội Liên hiệp Phụ nữ năm 1930.`.trim().split('\n').map(function(l){var i=l.indexOf('|');return [l.slice(0,i),l.slice(i+1)];});
   var CHM={Au:'Au viết tắt từ aurum, tiếng Latin của vàng',Ag:'Ag từ argentum, tiếng Latin của bạc',Cu:'Cu từ cuprum, tiếng Latin của đồng',Na:'Na từ natrium (natri)',Fe:'Fe từ ferrum, tiếng Latin của sắt',K:'K từ kalium (kali)'};
-  function explain(q,a){var i,m;for(i=0;i<EX.length;i++)if(q.indexOf(EX[i][0])>=0)return EX[i][1];
+  function explain(q,a){var i,m;if(typeof EXQ==='object'&&EXQ[q])return EXQ[q];for(i=0;i<EX.length;i++)if(q.indexOf(EX[i][0])>=0)return EX[i][1];
     if(m=/^Thủ đô của (.+)\?$/.exec(q))return a+' là thủ đô của '+m[1]+'. Thủ đô là nơi đặt cơ quan đầu não của chính phủ.';
     if(m=/^Ký hiệu hóa học của (.+)\?$/.exec(q))return 'Ký hiệu hóa học của '+m[1]+' là '+a+'. '+(CHM[a]?CHM[a]+'.':'Ký hiệu hóa học thường là 1 - 2 chữ cái đầu của tên nguyên tố.');
     if(m=/^Trái nghĩa của "(.+)"\?$/.exec(q))return '"'+m[1]+'" và "'+a+'" là hai từ trái nghĩa. Biết nhiều cặp từ trái nghĩa giúp bạn diễn đạt phong phú hơn.';
@@ -2027,15 +2027,564 @@ Ngày Phụ nữ Việt Nam|Ngày 20/10 là Ngày Phụ nữ Việt Nam, kỷ ni
   var TIER_EASY=`100 chia cho 2|Trái Đất quay quanh gì|Dùng gì để|Con gà có mấy chân|1 + 1|Mỗi ngày có bao nhiêu giờ|Hình vuông có mấy cạnh?|Con gì kêu|Con gì thích|Con gì biết gáy|Con gì có sừng|Con gì có vảy|Con gì sống dưới nước|Con gì có vòi|Con gì biết nói|Con gì bốn chân|Con gì ngủ đông|Con gì thay da|Con gì không chân|Cái gì dùng để xem|Cái gì có 5 ngón|Cái gì có răng|Cái gì có kim|Cái gì có tai|Cái gì có cánh|có 4 chân nhưng|Cái gì có chân nhưng|Mưa rơi từ đâu|Mặt trời mọc ở hướng|Mùa nào|Một tuần có|1 tuần có|Một năm thường|Một năm nhuận|Một tá|Một yến|Một giờ rưỡi|1 phút có|Nào là số chẵn|Nào là số lẻ|Nào là kim loại|Nào là cây ăn quả|Nào là loài ăn cỏ|Nào là loài bò sát|Nào là trái cây màu đỏ|Nào là khí để thở|Con người cần khí|Con người có bao nhiêu giác quan|Con người thường nói|Thủ đô Việt Nam|Nước nào có hình chữ S|Tháng nào ngắn nhất|Tháng nào có 31|Hình tròn có mấy góc|Hình gì có 3 cạnh|Hình lục giác|Hình chữ nhật có mấy góc|Vật nào có dạng hình tròn|1 con bò|1 con vịt|Trái đất có mấy mặt trăng|Mặt trăng quay quanh|Số liền sau|Số liền trước|Số lớn nhất có|Số nhỏ nhất có|Bao nhiêu mùa|Bao nhiêu chữ số trong số 100|Một chiếc xe đạp|Từ Dog|Từ Water|Thank you|Số 7 trong tiếng Anh|Nếu có 3 quả táo|Có 3 quả cam|Bạn có 3 cái kẹo|Có 12 cái kẹo|4 quả cam chia|Hôm nay thứ Sáu|Cây gì có quả vàng|Màu nào trộn|Trộn màu|Thủ đô của Pháp|Thủ đô của Nhật|Thủ đô của Anh|Thủ đô của Trung Quốc|Thủ đô của Ý|Thủ đô của Thái Lan|của hiđro|của oxi|của cacbon|Hành tinh có sự sống|Cơ quan nào giúp ta hít|bơm máu|Nhện có mấy chân|Môn thể thao ném bóng|ghi bàn bằng chân|Nhạc cụ dùng dùi|Nhạc cụ có 6 dây|Thiết bị nào|Đèn giao thông|mũ bảo hiểm|đánh răng ít nhất|nếm vị|Cơ thể cần uống|Hệ Mặt Trời có mấy|Ngôi sao gần Trái Đất|Băng tan chảy|Nam châm hút|Nước có công thức|Công thức hóa học của nước|Tháp Eiffel ở thành phố|Việt Nam giáp biển|chiếc đàn thần|Tết Nguyên đán thường vào mùa`.split('|');
   var TIER_HARD=`7 + 7 ÷ 7|Viên gạch nặng|30 chia cho 1/2|8 chia cho 1/2|Ngăn kéo có 5 tất|Gấp đôi tờ giấy|cộng với chính nó|Căn bậc hai|Một byte|cường độ dòng điện|Colosseum|Thế vận hội|Hoàng Xuân Vinh|Bình Ngô|Lam Sơn|ba lần chiến thắng|Brasília|Thủ đô của Canada|Thủ đô của Úc|Phnom Penh|Jakarta|Viêng Chăn|Quốc ca|Mona Lisa|thuyết tương đối|lực hấp dẫn|đẻ trứng nhưng|mặn nhất|CPU|sau sáp nhập|thanh điệu|Bảng chữ cái tiếng Việt|bao nhiêu dân tộc|đông dân nhất|diện tích lớn nhất|Đại dương nào nhỏ nhất|Taj Mahal|Số La Mã|đen khi mua|bị phá vỡ|nguyên âm|Android|lập trình|đứng đầu|thay thế con thỏ|lên thì không xuống|luôn ở phía trước|luôn đi tới|không bao giờ hỏi|càng lấy đi|càng cắt|càng rửa|Số nào lật ngược|vừa chẵn vừa là số nguyên tố|nhân với chính nó|mang tên vị thần|vành đai|Vết Đỏ|Ký hiệu ©|Ngày thống nhất|con vịt đi trước|dời đô|Bạch Đằng|Biển Chết|Everest|Vạn Lý Trường Thành|Ampe|Ký hiệu @|Chim ruồi|bay lùi|Mật khẩu tốt`.split('|');
   var TIER_NORM=`của vàng|của bạc|của sắt|Hà Nội xưa|Ngày 2/9|Điện Biên Phủ|Hai Bà Trưng|Quang Trung|thống nhất đất nước năm nào`.split('|');
-  var KDEF={anto:0,eng:0,emoji:0,idiom:0,mix:0,riddle:0,unit:0,food:0,ani2:0,chem:2,hist:2};
+  var KDEF={ant: 0, eng: 0, emj: 0, idm: 0, mix: 0, rid: 0, unt: 0, food: 0, an2: 0, chem: 2, his: 2};
   var TW=[[70,30,0],[20,60,20],[0,25,75]];
   function qOf(it){return Array.isArray(it)?it[0]:it.q;}
   function isQA(a){var x=a&&a[0];if(!x)return false;if(Array.isArray(x))return typeof x[0]==='string'&&x[0].length>8&&typeof x[1]==='string'&&(x[2]===undefined||Array.isArray(x[2]));return typeof x==='object'&&typeof x.q==='string'&&typeof x.a==='string'&&Array.isArray(x.w);}
   function hit(q,L){for(var i=0;i<L.length;i++)if(q.indexOf(L[i])>=0)return true;return false;}
-  function tierOf(it,k){var q=qOf(it);if(hit(q,TIER_HARD))return 2;if(hit(q,TIER_EASY))return 0;if(hit(q,TIER_NORM))return 1;if(/^\d[\d,]* [+−×:] \d[\d,]* = \?$/.test(q))return 0;return KDEF[k]!==undefined?KDEF[k]:1;}
+  function tierOf(it,k){var q=qOf(it);if(Array.isArray(it)&&typeof it[4]==='number')return it[4];if(hit(q,TIER_HARD))return 2;if(hit(q,TIER_EASY))return 0;if(hit(q,TIER_NORM))return 1;if(/^\d[\d,]* [+−×:] \d[\d,]* = \?$/.test(q))return 0;return KDEF[k]!==undefined?KDEF[k]:1;}
   function pickTier(){var w=TW[st.lock?1:dv()],r=ri(0,99);return r<w[0]?0:(r<w[0]+w[1]?1:2);}
   var _dr13=draw;draw=function(k,a){if(!isQA(a))return _dr13(k,a);var t=pickTier(),f=a.filter(function(x){return tierOf(x,k)===t;});
     if(f.length<3){f=a.filter(function(x){return Math.abs(tierOf(x,k)-t)<=1;});if(f.length<3)return _dr13(k,a);}return _dr13(k+'~'+t,f);};
+  // ===== v14: ngân hàng câu hỏi lớn + chống trùng câu trong mỗi ván =====
+  var _s14=20260101;function r0(){_s14=(_s14+0x6D2B79F5)|0;var t=Math.imul(_s14^(_s14>>>15),1|_s14);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;}
+  function wr(list,ex,n){var a=[],i,j,t;for(i=0;i<list.length;i++)if(list[i]!==ex&&a.indexOf(list[i])<0)a.push(list[i]);for(i=a.length-1;i>0;i--){j=Math.floor(r0()*(i+1));t=a[i];a[i]=a[j];a[j]=t;}return a.slice(0,n);}
+  function rows(t){return t.trim().split('\n').map(function(l){return l.split('|');});}
+  var EXQ={};function mk(q,a,w,e,t){EXQ[q]=e||'';return [q,a,w,e||'',t];}
+  var MIN=Math.min;
+  // --- THẾ GIỚI: thủ đô, châu lục, tiền tệ, danh thắng
+  var CT=rows(`Nhật Bản|Tokyo|Châu Á|Yên|0
+Hàn Quốc|Seoul|Châu Á|Won|0
+Trung Quốc|Bắc Kinh|Châu Á|Nhân dân tệ|0
+Thái Lan|Bangkok|Châu Á|Baht|0
+Lào|Viêng Chăn|Châu Á|Kíp|1
+Campuchia|Phnom Penh|Châu Á|Riel|1
+Singapore|Singapore|Châu Á|Đô la Singapore|1
+Malaysia|Kuala Lumpur|Châu Á|Ringgit|1
+Indonesia|Jakarta|Châu Á|Rupiah|1
+Philippines|Manila|Châu Á|Peso Philippines|1
+Myanmar|Naypyidaw|Châu Á|Kyat|2
+Ấn Độ|New Delhi|Châu Á|Rupee Ấn Độ|1
+Pakistan|Islamabad|Châu Á||2
+Nepal|Kathmandu|Châu Á||2
+Bangladesh|Dhaka|Châu Á||2
+Mông Cổ|Ulaanbaatar|Châu Á||2
+Đông Timor|Dili|Châu Á||2
+Ả Rập Xê Út|Riyadh|Châu Á|Riyal Ả Rập Xê Út|2
+Iran|Tehran|Châu Á|Rial Iran|2
+Iraq|Baghdad|Châu Á|Dinar Iraq|2
+Jordan|Amman|Châu Á|Dinar Jordan|2
+Qatar|Doha|Châu Á||2
+Kazakhstan|Astana|Châu Á|Tenge|2
+Thổ Nhĩ Kỳ|Ankara|-|Lira|1
+Nga|Moscow|-|Rúp|0
+Pháp|Paris|Châu Âu|Euro|0
+Đức|Berlin|Châu Âu|Euro|0
+Ý|Roma|Châu Âu|Euro|0
+Tây Ban Nha|Madrid|Châu Âu|Euro|0
+Bồ Đào Nha|Lisbon|Châu Âu|Euro|1
+Anh|Luân Đôn|Châu Âu|Bảng Anh|0
+Hà Lan|Amsterdam|Châu Âu|Euro|1
+Bỉ|Brussels|Châu Âu|Euro|1
+Thụy Sĩ|Bern|Châu Âu|Franc Thụy Sĩ|2
+Áo|Vienna|Châu Âu|Euro|1
+Hy Lạp|Athens|Châu Âu|Euro|1
+Thụy Điển|Stockholm|Châu Âu|Krona Thụy Điển|1
+Na Uy|Oslo|Châu Âu|Krone Na Uy|1
+Đan Mạch|Copenhagen|Châu Âu|Krone Đan Mạch|1
+Phần Lan|Helsinki|Châu Âu|Euro|1
+Ba Lan|Warsaw|Châu Âu|Zloty|2
+Ireland|Dublin|Châu Âu|Euro|1
+Ukraine|Kyiv|Châu Âu|Hryvnia|2
+Hungary|Budapest|Châu Âu|Forint|2
+Séc|Praha|Châu Âu|Koruna Séc|2
+Romania|Bucharest|Châu Âu|Leu Romania|2
+Ai Cập|Cairo|Châu Phi|Bảng Ai Cập|0
+Kenya|Nairobi|Châu Phi|Shilling Kenya|2
+Nigeria|Abuja|Châu Phi|Naira|2
+Ethiopia|Addis Ababa|Châu Phi|Birr|2
+Ma-rốc|Rabat|Châu Phi|Dirham Ma-rốc|2
+Algeria|Algiers|Châu Phi|Dinar Algeria|2
+Ghana|Accra|Châu Phi|Cedi|2
+Tanzania|Dodoma|Châu Phi|Shilling Tanzania|2
+Mỹ|Washington, D.C.|Bắc Mỹ|Đô la Mỹ|0
+Canada|Ottawa|Bắc Mỹ|Đô la Canada|1
+Mexico|Mexico City|Bắc Mỹ|Peso Mexico|1
+Cuba|La Habana|Bắc Mỹ|Peso Cuba|2
+Brazil|Brasília|Nam Mỹ|Real|1
+Argentina|Buenos Aires|Nam Mỹ|Peso Argentina|1
+Chile|Santiago|Nam Mỹ|Peso Chile|2
+Peru|Lima|Nam Mỹ|Sol|2
+Colombia|Bogotá|Nam Mỹ|Peso Colombia|2
+Úc|Canberra|Châu Đại Dương|Đô la Úc|1
+New Zealand|Wellington|Châu Đại Dương|Đô la New Zealand|1
+Fiji|Suva|Châu Đại Dương|Đô la Fiji|2`);
+  var CONTS=['Châu Á','Châu Âu','Châu Phi','Bắc Mỹ','Nam Mỹ','Châu Đại Dương'],CAPS=CT.map(function(x){return x[1];}),NAMS=CT.map(function(x){return x[0];}),CURS=CT.map(function(x){return x[3];}).filter(Boolean);
+  var CTR=[];CT.forEach(function(x){var n=x[0],c=x[1],ct=x[2],cu=x[3],t=+x[4],tail=ct!=='-'?', nằm ở '+ct+'.':'.';
+    CTR.push(mk('Thủ đô của '+n+' là thành phố nào?',c,wr(CAPS,c,3),c+' là thủ đô của '+n+tail,t));
+    if(c!==n)CTR.push(mk(c+' là thủ đô của nước nào?',n,wr(NAMS,n,3),c+' là thủ đô của '+n+tail,MIN(2,t+1)));
+    if(ct!=='-')CTR.push(mk(n+' nằm ở châu lục nào?',ct,wr(CONTS,ct,3),n+' nằm ở '+ct+', thủ đô là '+c+'.',t));
+    if(cu)CTR.push(mk('Đồng tiền chính thức của '+n+' là gì?',cu,wr(CURS,cu,3),'Tiền tệ chính thức của '+n+' là '+cu+'.',MIN(2,t+1)));});
+  var LM=rows(`Tháp Eiffel|Pháp|0
+Bảo tàng Louvre|Pháp|1
+Cung điện Versailles|Pháp|1
+Đấu trường Colosseum|Ý|0
+Tháp nghiêng Pisa|Ý|0
+Tượng Nữ thần Tự do|Mỹ|0
+Cầu Cổng Vàng|Mỹ|1
+Vạn Lý Trường Thành|Trung Quốc|0
+Đền Taj Mahal|Ấn Độ|0
+Kim tự tháp Giza|Ai Cập|0
+Nhà hát Opera Sydney|Úc|1
+Đền Angkor Wat|Campuchia|1
+Núi Phú Sĩ|Nhật Bản|0
+Tượng Chúa Cứu thế|Brazil|1
+Machu Picchu|Peru|2
+Tháp Big Ben|Anh|0
+Cung điện Buckingham|Anh|1
+Cổng Brandenburg|Đức|1
+Nhà thờ Sagrada Família|Tây Ban Nha|2
+Thành cổ Petra|Jordan|2
+Tháp Burj Khalifa|Các Tiểu vương quốc Ả Rập Thống nhất|1
+Điện Kremlin|Nga|1
+Đền Parthenon|Hy Lạp|1
+Tháp đôi Petronas|Malaysia|1
+Chùa Vàng Shwedagon|Myanmar|2
+Núi Kilimanjaro|Tanzania|2
+Chichén Itzá|Mexico|2
+Tượng Moai trên đảo Phục Sinh|Chile|2`);
+  var LMC=LM.map(function(x){return x[1];});
+  LM.forEach(function(x){CTR.push(mk(x[0]+' nằm ở nước nào?',x[1],wr(LMC,x[1],3),x[0]+' là danh thắng nổi tiếng của '+x[1]+'.',+x[2]));});
+  // --- NGUYÊN TỐ
+  var EL=rows(`Hiđro|H|1|0
+Heli|He|2|1
+Liti|Li|3|2
+Cacbon|C|6|0
+Nitơ|N|7|1
+Oxi|O|8|0
+Flo|F|9|2
+Neon|Ne|10|2
+Natri|Na|11|1
+Magie|Mg|12|2
+Nhôm|Al|13|1
+Silic|Si|14|2
+Photpho|P|15|2
+Lưu huỳnh|S|16|2
+Clo|Cl|17|2
+Kali|K|19|2
+Canxi|Ca|20|1
+Crom|Cr|24|2
+Mangan|Mn|25|2
+Sắt|Fe|26|0
+Niken|Ni|28|2
+Đồng|Cu|29|1
+Kẽm|Zn|30|2
+Bạc|Ag|47|1
+Thiếc|Sn|50|2
+Iot|I|53|2
+Vàng|Au|79|0
+Thủy ngân|Hg|80|1
+Chì|Pb|82|2
+Urani|U|92|2`);
+  var ELN=EL.map(function(x){return x[0];}),ELS=EL.map(function(x){return x[1];}),ORG={Au:'từ aurum, tiếng Latin của vàng',Ag:'từ argentum, tiếng Latin của bạc',Cu:'từ cuprum, tiếng Latin của đồng',Na:'từ natrium (natri)',Fe:'từ ferrum, tiếng Latin của sắt',K:'từ kalium (kali)',Hg:'từ hydrargyrum, tiếng Latin của thủy ngân',Pb:'từ plumbum, tiếng Latin của chì',Sn:'từ stannum, tiếng Latin của thiếc'};
+  var ELQ=[];EL.forEach(function(x){var n=x[0],s=x[1],z=x[2],t=+x[3],e=n+' có ký hiệu '+s+(ORG[s]?' ('+s+' '+ORG[s]+')':'')+' và số hiệu nguyên tử '+z+' (số proton trong hạt nhân).';
+    ELQ.push(mk('Ký hiệu hóa học của '+n+' là gì?',s,wr(ELS,s,3),e,t));
+    ELQ.push(mk('Nguyên tố nào có ký hiệu hóa học '+s+'?',n,wr(ELN,n,3),e,MIN(2,t+1)));
+    ELQ.push(mk('Nguyên tố hóa học nào có số hiệu nguyên tử '+z+'?',n,wr(ELN,n,3),e,2));});
+  // --- ĐỘNG VẬT
+  var AN=rows(`Hổ|Thú|Ăn thịt|0
+Sư tử|Thú|Ăn thịt|0
+Voi|Thú|Ăn thực vật|0
+Hươu cao cổ|Thú|Ăn thực vật|0
+Ngựa|Thú|Ăn thực vật|0
+Thỏ|Thú|Ăn thực vật|0
+Gấu nâu|Thú|Ăn tạp|0
+Lợn|Thú|Ăn tạp|0
+Cá heo|Thú|Ăn thịt|1
+Cá voi xanh|Thú|Ăn thịt|1
+Dơi|Thú||2
+Kanguru|Thú|Ăn thực vật|0
+Gấu trúc|Thú|Ăn thực vật|0
+Chó sói|Thú|Ăn thịt|0
+Báo săn|Thú|Ăn thịt|1
+Linh cẩu|Thú|Ăn thịt|1
+Hà mã|Thú|Ăn thực vật|1
+Tê giác|Thú|Ăn thực vật|1
+Trâu|Thú|Ăn thực vật|0
+Dê|Thú|Ăn thực vật|0
+Cừu|Thú|Ăn thực vật|0
+Ngựa vằn|Thú|Ăn thực vật|0
+Cá mập|Cá|Ăn thịt|0
+Cá chép|Cá|Ăn tạp|0
+Cá ngựa|Cá||2
+Cá hề|Cá||1
+Đại bàng|Chim|Ăn thịt|0
+Chim cánh cụt|Chim|Ăn thịt|1
+Đà điểu|Chim|Ăn tạp|1
+Vẹt|Chim|Ăn thực vật|0
+Gà|Chim|Ăn tạp|0
+Vịt|Chim|Ăn tạp|0
+Cú mèo|Chim|Ăn thịt|1
+Chim ruồi|Chim||2
+Cò|Chim|Ăn thịt|1
+Bồ câu|Chim|Ăn thực vật|0
+Rắn hổ mang|Bò sát|Ăn thịt|0
+Cá sấu|Bò sát|Ăn thịt|1
+Rùa|Bò sát||0
+Tắc kè|Bò sát|Ăn thịt|1
+Thằn lằn|Bò sát|Ăn thịt|1
+Kỳ đà|Bò sát|Ăn thịt|2
+Ếch|Lưỡng cư|Ăn thịt|0
+Cóc|Lưỡng cư|Ăn thịt|1
+Sa giông|Lưỡng cư|Ăn thịt|2
+Bướm|Côn trùng||0
+Ong|Côn trùng||0
+Kiến|Côn trùng||0
+Châu chấu|Côn trùng|Ăn thực vật|1
+Muỗi|Côn trùng||0
+Dế|Côn trùng||1
+Chuồn chuồn|Côn trùng|Ăn thịt|1
+Bọ rùa|Côn trùng|Ăn thịt|2`);
+  var GRD={'Thú':'Thú nuôi con bằng sữa và thường có lông mao','Chim':'Chim có lông vũ, mỏ và đẻ trứng','Bò sát':'Bò sát có da khô phủ vảy và là động vật máu lạnh','Lưỡng cư':'Lưỡng cư có da ẩm, sống được cả ở nước và trên cạn','Cá':'Cá sống dưới nước và thở bằng mang','Côn trùng':'Côn trùng có 6 chân và cơ thể chia làm 3 phần'},GRS=Object.keys(GRD),ZOO=[];
+  var CARN=AN.filter(function(x){return x[2]==='Ăn thịt';}).map(function(x){return x[0];}),HERB=AN.filter(function(x){return x[2]==='Ăn thực vật';}).map(function(x){return x[0];});
+  AN.forEach(function(x){var n=x[0],g=x[1],t=+x[3],others=AN.filter(function(y){return y[1]!==g;}).map(function(y){return y[0];});
+    ZOO.push(mk(n+' thuộc nhóm động vật nào?',g,wr(GRS,g,3),n+' thuộc nhóm '+g.toLowerCase()+'. '+GRD[g]+'.',t));
+    ZOO.push(mk('Con vật nào sau đây thuộc nhóm '+g.toLowerCase()+'?',n,wr(others,n,3),n+' thuộc nhóm '+g.toLowerCase()+'. '+GRD[g]+'.',t));
+    if(x[2]==='Ăn thịt')ZOO.push(mk('Loài nào sau đây là động vật ăn thịt? ('+n+')',n,wr(HERB,n,3),n+' là động vật ăn thịt, còn các loài kia chủ yếu ăn thực vật.',t));
+    if(x[2]==='Ăn thực vật')ZOO.push(mk('Loài nào sau đây chủ yếu ăn thực vật? ('+n+')',n,wr(CARN,n,3),n+' chủ yếu ăn thực vật, còn các loài kia là động vật ăn thịt.',t));});
+  // --- TỪ VỰNG TIẾNG ANH
+  var VO=rows(`apple|quả táo|0
+banana|quả chuối|0
+orange|quả cam|0
+grape|quả nho|0
+mango|quả xoài|0
+watermelon|dưa hấu|0
+pineapple|quả dứa|0
+lemon|quả chanh|0
+strawberry|quả dâu tây|1
+coconut|quả dừa|0
+dog|con chó|0
+cat|con mèo|0
+bird|con chim|0
+fish|con cá|0
+horse|con ngựa|0
+cow|con bò|0
+pig|con lợn|0
+chicken|con gà|0
+duck|con vịt|0
+rabbit|con thỏ|0
+elephant|con voi|0
+lion|sư tử|0
+tiger|con hổ|0
+monkey|con khỉ|0
+snake|con rắn|0
+turtle|con rùa|0
+bear|con gấu|0
+sheep|con cừu|1
+frog|con ếch|0
+butterfly|con bướm|1
+book|quyển sách|0
+pen|cái bút|0
+table|cái bàn|0
+chair|cái ghế|0
+door|cái cửa|0
+window|cửa sổ|0
+bed|cái giường|0
+lamp|cái đèn|0
+clock|đồng hồ|0
+bag|cái cặp|1
+key|chìa khóa|1
+umbrella|cái ô|1
+mirror|cái gương|1
+computer|máy tính|0
+phone|điện thoại|0
+television|ti vi|0
+bicycle|xe đạp|0
+car|ô tô|0
+train|tàu hỏa|0
+airplane|máy bay|0
+boat|con thuyền|1
+bus|xe buýt|0
+house|ngôi nhà|0
+school|trường học|0
+hospital|bệnh viện|1
+market|cái chợ|0
+river|dòng sông|1
+mountain|ngọn núi|1
+sea|biển|0
+forest|khu rừng|1
+tree|cái cây|0
+flower|bông hoa|0
+sun|mặt trời|0
+moon|mặt trăng|0
+star|ngôi sao|0
+rain|cơn mưa|0
+wind|cơn gió|1
+cloud|đám mây|1
+snow|tuyết|1
+fire|ngọn lửa|1
+water|nước|0
+sand|cát|1
+mother|mẹ|0
+father|bố|0
+grandmother|bà|1
+grandfather|ông|1
+teacher|giáo viên|0
+doctor|bác sĩ|0
+farmer|nông dân|1
+police|cảnh sát|1
+singer|ca sĩ|1
+driver|tài xế|1
+nurse|y tá|1
+student|học sinh|0
+friend|người bạn|0
+baby|em bé|0
+red|màu đỏ|0
+blue|màu xanh dương|0
+green|màu xanh lá|0
+yellow|màu vàng|0
+black|màu đen|0
+white|màu trắng|0
+pink|màu hồng|0
+purple|màu tím|1
+brown|màu nâu|1
+big|to lớn|0
+small|nhỏ bé|0
+hot|nóng|0
+cold|lạnh|0
+fast|nhanh|0
+slow|chậm|0
+happy|vui vẻ|0
+sad|buồn bã|0
+beautiful|xinh đẹp|1
+tall|cao|0
+strong|khỏe mạnh|1
+clean|sạch sẽ|1
+dirty|bẩn|1
+new|mới|0
+hungry|đói bụng|1
+tired|mệt mỏi|1
+eat|ăn|0
+drink|uống|0
+sleep|ngủ|0
+run|chạy|0
+walk|đi bộ|0
+swim|bơi|0
+read|đọc|0
+write|viết|0
+sing|hát|0
+dance|nhảy múa|1
+cook|nấu ăn|1
+listen|lắng nghe|1
+speak|nói|0
+open|mở|0
+close|đóng|1
+jump|nhảy|1
+laugh|cười|1
+cry|khóc|1
+study|học|0
+play|chơi|0
+rice|cơm|0
+bread|bánh mì|0
+milk|sữa|0
+egg|quả trứng|0
+meat|thịt|0
+soup|món súp|1
+noodle|mì sợi|1
+sugar|đường|0
+salt|muối|0
+coffee|cà phê|0
+tea|trà|0
+ice cream|kem|0
+cake|bánh ngọt|1
+vegetable|rau củ|1
+weather|thời tiết|1
+library|thư viện|1
+dream|giấc mơ|1
+bridge|cây cầu|1
+island|hòn đảo|1
+rainbow|cầu vồng|1
+knowledge|kiến thức|2
+journey|chuyến đi|2
+neighbor|hàng xóm|2
+holiday|kỳ nghỉ|2
+environment|môi trường|2
+museum|bảo tàng|2
+dangerous|nguy hiểm|2
+important|quan trọng|2
+delicious|ngon tuyệt|2
+comfortable|thoải mái|2
+difficult|khó khăn|2
+invent|phát minh|2
+discover|khám phá|2
+borrow|mượn|2
+promise|lời hứa|2
+desert|sa mạc|2
+volcano|núi lửa|2
+earthquake|động đất|2
+thunder|tiếng sấm|2`);
+  var VOE=VO.map(function(x){return x[0];}),VOV=VO.map(function(x){return x[1];}),VOC=[];
+  VO.forEach(function(x){var t=+x[2],e='"'+x[0]+'" nghĩa là "'+x[1]+'". Học đều mỗi ngày vài từ, một năm bạn có cả nghìn từ!';
+    VOC.push(mk('Từ "'+x[0]+'" trong tiếng Anh nghĩa là gì?',x[1],wr(VOV,x[1],3),e,t));
+    VOC.push(mk('"'+x[1]+'" trong tiếng Anh là từ nào?',x[0],wr(VOE,x[0],3),e,t));});
+  // --- DÒNG THỜI GIAN
+  var TL2=rows(`40|Hai Bà Trưng khởi nghĩa chống quân Hán|2
+938|Ngô Quyền đại thắng quân Nam Hán trên sông Bạch Đằng|1
+1010|Lý Thái Tổ dời đô về Thăng Long|1
+1070|Nhà Lý xây dựng Văn Miếu ở Thăng Long|2
+1288|Trần Hưng Đạo đại thắng quân Nguyên Mông trên sông Bạch Đằng|2
+1428|Lê Lợi đại thắng quân Minh, Nguyễn Trãi viết Bình Ngô đại cáo|2
+1771|Khởi nghĩa Tây Sơn bùng nổ|2
+1789|Quang Trung đại phá quân Thanh|1
+1804|Nước ta đổi quốc hiệu thành Việt Nam|2
+1930|Đảng Cộng sản Việt Nam được thành lập|1
+1945|Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập|0
+1954|Chiến thắng Điện Biên Phủ|0
+1975|Đất nước thống nhất sau đại thắng mùa Xuân|0
+1986|Việt Nam bắt đầu công cuộc Đổi mới|1
+1994|Vịnh Hạ Long lần đầu được UNESCO công nhận là Di sản thế giới|2
+1995|Việt Nam gia nhập ASEAN|1
+2007|Việt Nam trở thành thành viên của WTO|2
+1492|Columbus đặt chân đến châu Mỹ|1
+1687|Newton công bố định luật vạn vật hấp dẫn|2
+1776|Mỹ tuyên bố độc lập|1
+1889|Tháp Eiffel khánh thành|1
+1896|Thế vận hội hiện đại đầu tiên được tổ chức tại Athens|2
+1903|Anh em nhà Wright thực hiện chuyến bay đầu tiên|1
+1912|Tàu Titanic chìm|1
+1914|Chiến tranh thế giới thứ nhất bùng nổ|1
+1939|Chiến tranh thế giới thứ hai bùng nổ|1
+1961|Yuri Gagarin trở thành người đầu tiên bay vào vũ trụ|1
+1969|Con người lần đầu đặt chân lên Mặt Trăng|0
+1989|Bức tường Berlin sụp đổ|1
+1991|Liên Xô tan rã|1
+1996|Cừu Dolly, động vật có vú nhân bản đầu tiên, ra đời|2`);
+  var YRS=TL2.map(function(x){return x[0];}),EVS=TL2.map(function(x){return x[1];}),TLN=[];
+  TL2.forEach(function(x){var y=x[0],e=x[1],t=+x[2],uniq=YRS.filter(function(z){return z===y;}).length===1,txt='Sự kiện này xảy ra vào năm '+y+': '+e+'.';
+    TLN.push(mk('Sự kiện "'+e+'" xảy ra vào năm nào?',y,wr(YRS,y,3),txt,t));
+    if(uniq)TLN.push(mk('Năm '+y+' gắn liền với sự kiện nào?',e,wr(EVS.filter(function(v,i){return YRS[i]!==y;}),e,3),txt,MIN(2,t+1)));});
+  // --- PHÁT MINH & TÁC GIẢ
+  var IV=rows(`p|điện thoại|Alexander Graham Bell|1
+p|bóng đèn sợi đốt thương mại|Thomas Edison|1
+p|chiếc máy bay đầu tiên|Anh em nhà Wright|1
+p|động cơ hơi nước cải tiến|James Watt|2
+p|ô tô chạy xăng đầu tiên|Karl Benz|2
+p|máy in chữ rời ở châu Âu|Johannes Gutenberg|2
+p|pin điện|Alessandro Volta|2
+p|World Wide Web|Tim Berners-Lee|2
+p|hệ điều hành Linux|Linus Torvalds|2
+p|ngôn ngữ lập trình Python|Guido van Rossum|2
+p|mạng xã hội Facebook|Mark Zuckerberg|1
+p|vắc-xin phòng bệnh dại|Louis Pasteur|2
+p|vắc-xin đậu mùa|Edward Jenner|2
+p|tia X|Wilhelm Röntgen|2
+p|thuốc kháng sinh penicillin|Alexander Fleming|1
+p|bảng tuần hoàn các nguyên tố|Dmitri Mendeleev|2
+d|thuyết tương đối|Albert Einstein|0
+d|định luật vạn vật hấp dẫn|Isaac Newton|0
+d|thuyết tiến hóa|Charles Darwin|1
+d|công trình nghiên cứu về phóng xạ (hai giải Nobel)|Marie Curie|2
+d|việc quan sát các vệ tinh của Sao Mộc bằng kính viễn vọng|Galileo Galilei|2
+t|truyện thơ Truyện Kiều|Nguyễn Du|0
+t|Bình Ngô đại cáo|Nguyễn Trãi|1
+t|truyện Dế Mèn phiêu lưu ký|Tô Hoài|0
+t|truyện ngắn Chí Phèo|Nam Cao|1
+t|tiểu thuyết Số đỏ|Vũ Trọng Phụng|2
+t|tiểu thuyết Tắt đèn|Ngô Tất Tố|2
+t|bài thơ Tây Tiến|Quang Dũng|2
+t|bài hát Tiến quân ca|Văn Cao|0
+t|vở kịch Romeo và Juliet|William Shakespeare|0
+t|tiểu thuyết Hoàng tử bé|Antoine de Saint-Exupéry|1
+t|bộ truyện Harry Potter|J. K. Rowling|0
+t|bức tranh Mona Lisa|Leonardo da Vinci|0
+t|bức tranh Đêm đầy sao|Vincent van Gogh|1
+t|bức tượng David|Michelangelo|2
+t|bản nhạc Ánh trăng (Moonlight Sonata)|Ludwig van Beethoven|2
+t|vở ba lê Hồ thiên nga|Pyotr Tchaikovsky|2
+t|tiểu thuyết Những người khốn khổ|Victor Hugo|2
+t|tiểu thuyết Ông già và biển cả|Ernest Hemingway|2`);
+  var INV=[];IV.forEach(function(x){var k=x[0],th=x[1],p=x[2],t=+x[3],grp=IV.filter(function(y){return y[0]===k;}).map(function(y){return y[2];}),
+    q=k==='p'?'Ai được ghi nhận là người phát minh ra '+th+'?':(k==='d'?'Ai là người gắn liền với '+th+'?':'Ai là tác giả của '+th+'?');
+    INV.push(mk(q,p,wr(grp,p,3),p+' gắn với '+th+'.',t));});
+  // --- ĐỐ MẸO HACK NÃO (tầng|câu hỏi|đáp án|sai 1|sai 2|sai 3|giải thích)
+  var BRN=rows(`2|Một tờ giấy hình vuông có 4 góc. Cắt bỏ một góc bằng một đường thẳng thì còn mấy góc?|5|3|4|6|Cắt cạnh xéo làm mất 1 góc nhưng thêm 2 góc mới: 4 − 1 + 2 = 5.
+1|Trong giỏ có 10 quả táo, bạn lấy đi 3 quả. Bạn đang có mấy quả?|3|7|10|13|Bạn lấy đi 3 quả thì chính bạn đang có 3 quả.
+2|Cái gì có thể đi vòng quanh thế giới mà vẫn nằm yên ở góc phòng?|Con tem|Quả địa cầu|Tấm bản đồ|La bàn|Con tem dán ở góc phong bì có thể đi khắp thế giới.
+2|Một người đẩy xe đến khách sạn rồi nói mình bị phá sản. Anh ta đang chơi trò gì?|Cờ tỷ phú|Cờ vua|Bài tây|Cờ cá ngựa|Trong cờ tỷ phú, đi vào ô khách sạn của đối thủ có thể bị phá sản.
+2|Từ nào luôn bị viết sai trong mọi từ điển?|Sai|Đúng|Lỗi|Chữ|Từ "sai" luôn được viết đúng là "sai".
+2|Có 5 người bắt tay nhau, mỗi cặp bắt tay đúng một lần. Có tất cả bao nhiêu cái bắt tay?|10|20|25|15|Số cặp là 5 × 4 : 2 = 10.
+2|Có 6 người bắt tay nhau, mỗi cặp bắt tay đúng một lần. Có tất cả bao nhiêu cái bắt tay?|15|30|12|36|Số cặp là 6 × 5 : 2 = 15.
+1|Một người nông dân có 17 con cừu, tất cả trừ 9 con bị chết. Còn lại mấy con?|9|8|17|0|Tất cả trừ 9 con chết nghĩa là 9 con còn sống.
+2|Một nửa của 2/3 là bao nhiêu?|1/3|1/6|1/4|3/4|2/3 : 2 = 1/3.
+1|Mẹ của Lan có 4 người con: Xuân, Hạ, Thu và ...?|Lan|Đông|An|Mẹ|Mẹ của Lan có con là Lan, nên người con thứ tư chính là Lan.
+2|Bạn bước vào căn phòng tối chỉ có một que diêm, một đèn dầu, một cây nến và một bếp củi. Bạn thắp thứ gì trước?|Que diêm|Đèn dầu|Cây nến|Bếp củi|Phải quẹt que diêm trước thì mới thắp được những thứ còn lại.
+2|Một đoàn tàu điện chạy về hướng Bắc. Khói tàu bay về hướng nào?|Không có khói|Hướng Nam|Hướng Bắc|Hướng Đông|Tàu điện không đốt nhiên liệu nên không có khói.
+1|Ba người ăn 3 bát cơm hết 3 phút. Một người ăn 1 bát cơm hết mấy phút?|3|1|9|6|Mỗi người ăn 1 bát hết 3 phút.
+2|5 cái máy làm 5 món đồ chơi trong 5 phút. Hỏi 100 cái máy làm 100 món đồ chơi hết mấy phút?|5|100|1|50|Mỗi máy làm 1 món hết 5 phút nên 100 máy làm 100 món cũng hết 5 phút.
+2|Một sợi dây dài 10 m, cắt thành các đoạn 2 m. Cần cắt mấy lần?|4|5|2|10|Có 5 đoạn nên chỉ cần cắt 4 lần.
+1|Bạn đứng ở bậc thang thứ 5, đi lên 3 bậc rồi xuống 2 bậc. Bạn đang ở bậc mấy?|6|5|8|10|5 + 3 − 2 = 6.
+2|Đồng hồ đánh 6 tiếng chuông mất 5 giây. Đánh 12 tiếng chuông mất bao lâu?|11 giây|10 giây|12 giây|22 giây|6 tiếng có 5 khoảng nghỉ nên mỗi khoảng 1 giây; 12 tiếng có 11 khoảng nghỉ nên mất 11 giây.
+1|Hôm qua của ngày mai là ngày nào?|Hôm nay|Hôm qua|Ngày mai|Ngày kia|Ngày mai lùi lại một ngày chính là hôm nay.
+2|Ngày kia của hôm qua là ngày nào?|Ngày mai|Hôm nay|Hôm qua|Ngày kia|Hôm qua cộng 2 ngày là ngày mai.
+2|Nếu 1 = 5, 2 = 25, 3 = 125, 4 = 625 thì 5 = ?|1|3125|25|5|Đề bài đã cho 1 = 5, nên 5 = 1 (đọc ngược lại).
+1|Số tiếp theo trong dãy 1, 1, 2, 3, 5, 8, ...?|13|11|12|10|Dãy Fibonacci: mỗi số bằng tổng hai số trước, 5 + 8 = 13.
+1|Số tiếp theo trong dãy 2, 6, 12, 20, 30, ...?|42|40|36|44|Các số có dạng n × (n + 1): sau 5 × 6 = 30 là 6 × 7 = 42.
+1|Số tiếp theo trong dãy 1, 4, 9, 16, 25, ...?|36|30|32|35|Đây là dãy bình phương: 6 × 6 = 36.
+2|Số tiếp theo trong dãy 3, 6, 11, 18, 27, ...?|38|36|35|40|Hiệu tăng dần 3, 5, 7, 9, nên số tiếp theo cộng 11: 27 + 11 = 38.
+1|Số tiếp theo trong dãy 2, 3, 5, 7, 11, 13, ...?|17|15|19|14|Đây là dãy số nguyên tố; số nguyên tố sau 13 là 17.
+2|Số tiếp theo trong dãy 100, 50, 25, 12,5, ...?|6,25|6|7,5|5|Mỗi số bằng một nửa số trước.
+1|Chữ cái tiếp theo trong dãy A, C, E, G, ...?|I|H|J|K|Cách nhau một chữ cái, sau G bỏ H, đến I.
+2|Con ốc sên leo lên giếng sâu 10 m. Ban ngày leo 3 m, ban đêm tụt 2 m. Mấy ngày thì nó lên tới miệng giếng?|8|10|7|5|Mỗi ngày tiến 1 m; sau 7 ngày ở độ cao 7 m, ngày thứ 8 leo 3 m là tới 10 m.
+2|Hai đồng xu có tổng giá trị 30 đồng, trong đó một đồng không phải đồng 10 đồng. Hai đồng xu đó là?|20 và 10|15 và 15|25 và 5|30 và 0|Một đồng không phải 10 đồng, nhưng đồng còn lại thì có: 20 và 10.
+2|Một chiếc áo giá 100 nghìn đồng, giảm giá 20% rồi sau đó tăng giá 20%. Giá cuối cùng là bao nhiêu?|96 nghìn đồng|100 nghìn đồng|104 nghìn đồng|120 nghìn đồng|100 × 0,8 = 80, rồi 80 × 1,2 = 96.
+2|Giá một món hàng tăng 10% rồi giảm 10%. So với giá ban đầu, giá cuối cùng như thế nào?|Thấp hơn 1%|Bằng nhau|Cao hơn 1%|Thấp hơn 10%|1,1 × 0,9 = 0,99, tức thấp hơn 1%.
+2|3 con gà đẻ 3 quả trứng trong 3 ngày. Hỏi 6 con gà đẻ trong 6 ngày được bao nhiêu quả?|12|6|36|18|Mỗi con đẻ 1 quả trong 3 ngày; 6 con trong 6 ngày đẻ 6 × 2 = 12 quả.
+2|Có 8 viên bi giống hệt nhau, trong đó 1 viên nặng hơn. Dùng cân thăng bằng, ít nhất mấy lần cân để chắc chắn tìm ra viên nặng?|2|1|3|4|Chia 3 - 3 - 2: cân 2 lần là đủ.
+1|Số nào cộng với bất kỳ số nào cũng ra chính số đó?|0|1|10|-1|Số 0 là phần tử trung hòa của phép cộng.
+2|Hai số có tổng bằng 10 và tích bằng 21. Hai số đó là?|3 và 7|2 và 8|4 và 6|1 và 9|3 + 7 = 10 và 3 × 7 = 21.
+1|Số dương nhỏ nhất chia hết cho cả 2, 3 và 5 là số nào?|30|10|15|60|Đó là bội chung nhỏ nhất: 2 × 3 × 5 = 30.
+1|Số nguyên tố nhỏ nhất là số nào?|2|1|3|0|Số 1 không phải số nguyên tố, nên 2 là nhỏ nhất.
+1|Bình phương của 12 là bao nhiêu?|144|124|122|169|12 × 12 = 144.
+1|Lập phương của 3 là bao nhiêu?|27|9|81|18|3 × 3 × 3 = 27.
+1|15% của 200 là bao nhiêu?|30|15|25|35|10% của 200 là 20, 5% là 10, cộng lại 30.
+1|1/4 + 1/4 + 1/2 = ?|1|3/4|1/2|2|1/4 + 1/4 = 1/2, rồi 1/2 + 1/2 = 1.
+2|Bây giờ là 1 giờ 30. Sau 45 phút nữa là mấy giờ?|2 giờ 15|2 giờ|2 giờ 30|2 giờ 45|30 phút nữa là 2 giờ, thêm 15 phút là 2 giờ 15.
+2|Cái gì khi bạn gọi tên nó thì nó biến mất?|Sự im lặng|Cái bóng|Giấc mơ|Tiếng vang|Nói ra điều gì đó là phá vỡ sự im lặng.
+2|Cái gì làm bạn khóc mà không hề đau?|Củ hành|Cái kẹo|Hạt gạo|Cục tẩy|Cắt củ hành khiến mắt cay và chảy nước mắt.
+2|Cái gì màu đen khi sạch và màu trắng khi bẩn?|Bảng đen|Cái chảo|Than củi|Đôi giày|Phấn viết làm bảng đen dính vết trắng.
+2|Hai con vịt đi trước hai con vịt, hai con vịt đi sau hai con vịt. Có mấy con vịt?|4|2|6|8|Chỉ cần 4 con xếp hàng là mỗi con đều thỏa đề bài.
+1|An cao hơn Bình, Bình cao hơn Chi, Chi cao hơn Dũng. Ai thấp nhất?|Dũng|An|Bình|Chi|Thứ tự từ cao đến thấp: An, Bình, Chi, Dũng.
+2|Hôm nay là thứ Hai. 100 ngày nữa là thứ mấy?|Thứ Tư|Thứ Ba|Thứ Năm|Thứ Hai|100 chia 7 dư 2, thứ Hai cộng 2 ngày là thứ Tư.
+2|Hôm nay là thứ Sáu. 45 ngày nữa là thứ mấy?|Thứ Hai|Thứ Ba|Thứ Bảy|Chủ nhật|45 chia 7 dư 3, thứ Sáu cộng 3 ngày là thứ Hai.
+2|Hình chữ nhật có chiều dài 8 và chu vi 28. Chiều rộng bằng bao nhiêu?|6|4|10|20|Nửa chu vi là 14, nên chiều rộng là 14 − 8 = 6.
+1|Diện tích hình vuông có cạnh 9 là bao nhiêu?|81|36|18|72|9 × 9 = 81.
+2|Hình vuông có diện tích 49. Chu vi của nó là bao nhiêu?|28|14|21|49|Cạnh là 7 nên chu vi là 7 × 4 = 28.
+1|Hình lập phương có bao nhiêu cạnh?|12|6|8|10|Hình lập phương có 12 cạnh, 8 đỉnh và 6 mặt.
+1|Hình lập phương có bao nhiêu đỉnh?|8|6|12|4|Hình lập phương có 12 cạnh, 8 đỉnh và 6 mặt.
+1|Hình hộp chữ nhật có bao nhiêu mặt?|6|4|8|12|Hình hộp chữ nhật có 6 mặt, 12 cạnh và 8 đỉnh.
+2|Tổng các góc trong của hình lục giác bằng bao nhiêu độ?|720|360|540|900|Công thức (n − 2) × 180 với n = 6 cho 4 × 180 = 720.
+2|Tổng các góc trong của hình ngũ giác bằng bao nhiêu độ?|540|360|720|180|Công thức (n − 2) × 180 với n = 5 cho 3 × 180 = 540.
+2|Vẽ hai đường chéo của một hình vuông. Có tất cả bao nhiêu hình tam giác trong hình?|8|4|6|2|Có 4 tam giác nhỏ và 4 tam giác lớn ghép từ hai tam giác nhỏ.
+2|Có bao nhiêu hình vuông (mọi kích cỡ) trong lưới 3 × 3 ô vuông?|14|9|13|10|9 hình 1 × 1, 4 hình 2 × 2 và 1 hình 3 × 3.
+2|Có bao nhiêu hình vuông (mọi kích cỡ) trong lưới 2 × 2 ô vuông?|5|4|6|8|4 hình nhỏ và 1 hình lớn.
+2|Bàn cờ vua 8 × 8 có tất cả bao nhiêu hình vuông (mọi kích cỡ)?|204|64|128|256|Tổng 1² + 2² + ... + 8² = 204.
+1|Trong chân không, một chiếc lông vũ và một viên bi sắt rơi cùng lúc từ cùng độ cao. Vật nào chạm đất trước?|Cùng lúc|Viên bi sắt|Chiếc lông vũ|Không vật nào rơi|Không có lực cản của không khí thì mọi vật rơi nhanh như nhau.
+2|Trên đỉnh núi cao, nước sôi ở nhiệt độ như thế nào so với 100 độ C?|Thấp hơn 100 độ C|Cao hơn 100 độ C|Đúng 100 độ C|Không bao giờ sôi|Áp suất không khí thấp hơn nên nước sôi ở nhiệt độ thấp hơn.
+2|Trong các số 83, 89, 91, 97, số nào KHÔNG phải số nguyên tố?|91|89|83|97|91 = 7 × 13 nên chia hết cho 7.
+2|Trong các số 53, 57, 59, 61, số nào KHÔNG phải số nguyên tố?|57|53|59|61|57 = 3 × 19 nên chia hết cho 3.
+2|Trong các số 17, 21, 29, 31, số nào là hợp số (không phải số nguyên tố)?|21|17|29|31|21 = 3 × 7 nên là hợp số.
+2|Trong các số 144, 150, 169, 225, số nào KHÔNG phải số chính phương?|150|144|169|225|144 = 12², 169 = 13², 225 = 15², còn 150 không là bình phương của số nguyên nào.
+1|Bạn đứng thứ 40 trong hàng. Có bao nhiêu người đứng trước bạn?|39|40|41|60|Người thứ 40 có 39 người đứng trước.
+1|Bạn xếp thứ 7 từ đầu hàng và thứ 10 từ cuối hàng. Hàng có tất cả bao nhiêu người?|16|17|18|15|7 + 10 − 1 = 16 (vì bạn được đếm hai lần).
+2|Một cuốn sách dày 100 trang. Có bao nhiêu chữ số được dùng để đánh số các trang từ 1 đến 100?|192|100|200|191|9 trang 1 chữ số, 90 trang 2 chữ số, 1 trang 3 chữ số: 9 + 180 + 3 = 192.
+2|Từ 1 đến 100 có bao nhiêu số chia hết cho 7?|14|15|13|7|100 : 7 được 14 dư 2, nên có 14 số.
+2|Số 1 000 000 có bao nhiêu chữ số 0?|6|5|7|3|Một triệu viết là 1 và 6 chữ số 0.
+1|Tích 1 × 2 × 3 × 4 × 5 bằng bao nhiêu?|120|100|60|24|Đây là 5 giai thừa: 5! = 120.
+2|Trung bình cộng của 10, 20 và 60 là bao nhiêu?|30|35|25|90|(10 + 20 + 60) : 3 = 30.
+2|Một xe đi 60 km trong 1,5 giờ. Vận tốc trung bình là bao nhiêu km/giờ?|40|45|60|30|60 : 1,5 = 40 km/giờ.
+1|Một người đi bộ 5 km mỗi giờ. Đi 3 giờ được bao nhiêu km?|15|8|53|12|Quãng đường = vận tốc × thời gian = 5 × 3.
+2|Có 12 cái bánh chia cho 5 bạn, mỗi bạn được số bánh bằng nhau nhiều nhất. Còn thừa mấy cái?|2|1|3|0|12 = 5 × 2 + 2, nên thừa 2 cái.
+2|Cái gì có thể bay mà không có cánh, khóc mà không có mắt?|Đám mây|Con diều|Làn khói|Chiếc lá|Mây trôi trên trời và rơi xuống thành mưa.`).map(function(p){var q=p[1];EXQ[q]=p[6]||'';return [q,p[2],p.slice(3,6),p[6]||'',+p[0]];});
+  // đăng ký dạng trò
+  var N6={ctry:function(){qa('ctr',CTR);},elem:function(){qa('elm',ELQ);},zoo:function(){qa('zoo',ZOO);},vocab:function(){qa('voc',VOC);},tline:function(){qa('tln',TLN);},invent:function(){qa('inv',INV);},brain:function(){qa('brn',BRN);}};
+  Object.keys(N6).forEach(function(k){NEW[k]=N6[k];TYPES.push(k);});
+  PG[1][1]+=',ctry,elem,zoo,vocab,tline,invent,brain';
+  TL.ctry='Thế giới';TL.elem='Nguyên tố';TL.zoo='Động vật';TL.vocab='Từ vựng';TL.tline='Dòng thời gian';TL.invent='Phát minh';TL.brain='Đố mẹo hack não';
+  // chống trùng câu trong mỗi ván (kiến thức + toán)
+  var ARI=/^[\d\s+\-−×÷:=?²,.\/()]+$/;
+  var _rl14=rlvl;rlvl=function(){_rl14.apply(null,arguments);if(!st.seenQ||st.paused)return;var n=0;
+    while(true){var q=st.q4&&st.q4.snap;if(!q||!(gids(1).indexOf(st.curType)>=0||ARI.test(q.q)))break;var k=q.q+'|'+q.o[q.c];if(!st.seenQ[k]){st.seenQ[k]=1;break;}if(++n>12){st.dupFail=(st.dupFail||0)+1;break;}_rl14();}};
+  var _sg14=startGame;startGame=function(){st.seenQ={};st.dupFail=0;_sg14.apply(null,arguments);if(!st.seenQ){st.seenQ={};st.dupFail=0;}};
   loadCustom();syncCustomType();
   upd();rstart();
 })();
