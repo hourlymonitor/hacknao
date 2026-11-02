@@ -98,7 +98,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
 </div>
 <script>
 (function(){
-  var TOTAL=5000, MAXLIVES=10, STARTLIVES=5;
+  var TOTAL=5000, MAXLIVES=10, STARTLIVES=10;
   var st={level:0,score:0,lives:STARTLIVES,timer:null,winTimer:null,loseTimer:null,over:false,paused:false,playing:false,combo:0,maxCombo:0,noMiss:0,bestNoMiss:0,muted:false,resolved:false,giftLevel:-1,wrong:[],wby:{},boss:null,bossDone:-1,curType:'',lastQ:'',mode:'normal',pt:null,ptKey:'',spInt:null,spEnd:0};
   var area=document.getElementById('gameArea'),msg=document.getElementById('message');
   var lt=document.getElementById('levelText'),st2=document.getElementById('scoreText'),lv=document.getElementById('livesText'),rk=document.getElementById('rankText'),cb=document.getElementById('comboText');
@@ -118,7 +118,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   // ===== ÂM THANH (Web Audio API) =====
   var AC=null;
   function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
-  function tone(freq,dur,type,vol,delay){if(st.muted)return;var c=ac();if(!c)return;try{var o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(vol||0.12,c.currentTime+(delay||0));g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+(delay||0)+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+(delay||0));o.stop(c.currentTime+(delay||0)+dur);}catch(e){}}
+  function tone(freq,dur,type,vol,delay){if(st.muted)return;var c=ac();if(!c)return;try{if(c.state==='suspended')c.resume();var o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(vol||0.12,c.currentTime+(delay||0));g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+(delay||0)+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+(delay||0));o.stop(c.currentTime+(delay||0)+dur);}catch(e){}}
   function sClick(){tone(600,0.05,'square',0.06);}
   function sWin(){tone(523,0.1,'sine',0.1);tone(659,0.1,'sine',0.1,0.08);tone(784,0.15,'sine',0.1,0.16);}
   function sLose(){tone(300,0.15,'sawtooth',0.08);tone(200,0.25,'sawtooth',0.08,0.12);}
@@ -243,9 +243,16 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     var h='<div style="background:#f8fafc;border-radius:10px;padding:6px 0;margin-top:8px;max-height:180px;overflow-y:auto;">';
     lbData.forEach(function(e,i){h+='<div class="lb-row'+(i===hi?' lb-me':'')+'"><span>#'+(i+1)+' '+esc(e.n)+'</span><span><strong>'+esc(e.s)+'</strong>đ · cấp '+esc(e.l+1)+'</span></div>';});
     return h+'</div>';}
-  function getRankTitle(score){if(score<50)return 'Gà con chưa lông';if(score<150)return 'Gà nhà thua cay';if(score<300)return 'Bình dân vô hại';if(score<500)return 'Khá giỏi chứ';if(score<800)return 'Cao thủ điên đầu';if(score<1200)return 'Thần đồng điên đầu';return 'VUA trò chơi điên đầu';}
-  function getTaunt(score){if(score<50)return 'Thua một trò chơi điên đầu... bạn bè bạn chắc còn thua bạn hơn!';if(score<150)return 'Tạm được, nhưng đám bạn chắc đang cười nhạo bạn!';if(score<300)return 'Khá đó! Có ai trong bạn bè vượt được bạn không?';if(score<500)return 'Cao thủ rồi! Chia sẻ xem ai dám thách thức!';if(score<800)return 'Điên đầu thật! Bạn bè chắc gà hơn nhiều!';if(score<1200)return 'Thần đồng! Không ai trong danh bạ đánh bại được!';return 'VÔ ĐỐI! Ai vượt được bạn chắc là người ngoài hành tinh!';}
-  function shareText(){return 'Tôi vừa đạt '+st.score+' điểm (cấp '+(st.level+1)+', hạng '+rankOf(st.level)+', combo cao nhất ×'+st.maxCombo+') tại 5000 THỬ THÁCH ĐIÊN ĐẦU — "'+getRankTitle(st.score)+'"! '+getTaunt(st.score)+' Bạn có dám chơi không?';}
+  function getRankTitle(score){if(score<50)return 'Gà con chưa lông';if(score<150)return 'Gà nhà thua cay';if(score<300)return 'Bình dân vô hại';if(score<500)return 'Khá giỏi chứ';if(score<800)return 'Cao thủ hack não';if(score<1200)return 'Thần đồng hack não';return 'VUA trò chơi hack não';}
+  var TAUNTS=[[50,['Não bạn đang bật chế độ tiết kiệm pin rồi!','Máy tính bỏ túi còn làm tốt hơn điểm này.','Cá vàng trí nhớ 3 giây chắc cũng ngang ngửa bạn!','Bạn vừa lập kỷ lục về việc thua nhanh nhất!','Chắc bạn chơi bằng ngón chân phải không?','Đừng buồn, ít nhất bạn đã chứng minh game này thật sự khó.']],
+[150,['Cũng được đó, như bánh tráng nướng chưa kịp chín.','Khởi động xong rồi chứ? Giờ mới bắt đầu vào việc nha!','Bạn không dở, chỉ là câu hỏi hơi có ác ý thôi.','Mẹ xem điểm này chắc vẫn khen con tôi giỏi nhất.','Điểm số khiêm tốn như tính cách của bạn.','Gà con đã biết gáy, chỉ chưa gáy hay thôi!']],
+[300,['Khá đó! Nhưng chưa đủ để khoe với crush đâu.','Đủ để khoe với bà ngoại, chưa đủ để khoe với bạn bè.','Bạn đang ở giữa dở và giỏi: vùng đất của người bình thường!','Não bạn đã vào số 2, còn 3 số nữa thôi!','Chưa phải cao thủ, nhưng đã hơn khối người rồi!','Thêm vài ván nữa là bạn thôi phải đỏ mặt khi đọc điểm.']],
+[500,['Cao thủ rồi! Bạn bè đọc xong sẽ hỏi: sao nó giỏi vậy?','Điểm này mà đi thi Đường lên đỉnh... thôi ở nhà chơi tiếp đi!','Chia sẻ lên nhóm gia đình đi, kiểu gì cũng được khen.','Giỏi đến mức đám bạn phải lén tập thêm!','Một bước nữa là thành thần đồng của xóm!','Trình độ này, sáng mai chắc được khao cà phê rồi.']],
+[800,['Hack não đỉnh thật! Não bạn chắc đang bốc khói.','Bạn là lý do trò chơi này cần thêm cấp độ khó!','Với điểm này, bạn có quyền nói: tôi chơi game có tầm.','Bạn bè chắc đang tự hỏi bạn tập luyện ở đâu.','Thua đấy, nhưng là thua kiểu cao thủ cho vui!','Ngón tay bạn xứng đáng được mát-xa miễn phí!']],
+[1200,['Thần đồng xuất hiện! Xin mời ký tặng.','Điểm này nên được in lên áo thun.','Bạn không thua, chỉ là nghỉ giải lao chiến thuật thôi!','Bạn chơi như thể đã đọc trước đề!','Siêu trí tuệ đời thực, xin kính nể!','Có tin đồn bạn là AI giả làm người...']],
+[1e9,['VÔ ĐỐI! Cả Google cũng phải hỏi bạn.','Ai vượt được bạn chắc là người ngoài hành tinh!','Bạn là huyền thoại sống, xin cho xin chữ ký!','Máy chủ run rẩy khi thấy điểm của bạn!','Chỉ có một vấn đề: không còn ai dám chơi cùng bạn nữa!','Đến boss cuối cũng khóc thầm vì bạn!']]];
+  function getTaunt(score){for(var i=0;i<TAUNTS.length;i++){if(score<TAUNTS[i][0]){var L=TAUNTS[i][1];return L[Math.floor(_MR()*L.length)];}}return '';}
+  function shareText(){return 'Tôi vừa đạt '+st.score+' điểm (cấp '+(st.level+1)+', hạng '+rankOf(st.level)+', combo cao nhất ×'+st.maxCombo+') tại 5000 THỬ THÁCH HACK NÃO — "'+getRankTitle(st.score)+'"! '+getTaunt(st.score)+' Bạn có dám chơi không?';}
   function copyText(text,btn){var done=function(){if(btn){var old=btn.textContent;btn.textContent='Đã chép!';setTimeout(function(){btn.textContent=old;},1500);}sm('Đã sao chép! Dán vào Facebook/Zalo/Messenger','#059669');};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(fb);}else{fb();}
     function fb(){try{var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){sm('Không sao chép được','#dc2626');}}}
@@ -256,11 +263,11 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     var bCopy=document.createElement('button');bCopy.className='game-btn btn-sm btn-copy';bCopy.textContent='Sao chép';bCopy.onclick=function(){copyText(txt,bCopy);};
     var bWA=document.createElement('button');bWA.className='game-btn btn-sm btn-wa';bWA.textContent='WhatsApp';bWA.onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');};
     var bTW=document.createElement('button');bTW.className='game-btn btn-sm btn-tw';bTW.textContent='Twitter/X';bTW.onclick=function(){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt),'_blank');};
-    var bMore=document.createElement('button');bMore.className='game-btn btn-sm btn-ghost';bMore.textContent='Khác';bMore.onclick=function(){if(navigator.share){navigator.share({title:'5000 Thử Thách Điên Đầu',text:txt}).catch(function(){});}else{copyText(txt,bMore);}};
+    var bMore=document.createElement('button');bMore.className='game-btn btn-sm btn-ghost';bMore.textContent='Khác';bMore.onclick=function(){if(navigator.share){navigator.share({title:'5000 Thử Thách Hack Não',text:txt}).catch(function(){});}else{copyText(txt,bMore);}};
     row.appendChild(bCopy);row.appendChild(bWA);row.appendChild(bTW);row.appendChild(bMore);
     wrap.appendChild(t);wrap.appendChild(row);return wrap;}
   function shareCard(){var c=document.createElement('div');c.className='share-card';
-    c.innerHTML='<div style="font-size:11px;opacity:.8;margin-bottom:4px;">5000 THỬ THÁCH ĐIÊN ĐẦU</div>'
+    c.innerHTML='<div style="font-size:11px;opacity:.8;margin-bottom:4px;">5000 THỬ THÁCH HACK NÃO</div>'
       +'<div style="font-size:28px;font-weight:700;margin:4px 0;">'+st.score+' ĐIỂM</div>'
       +'<div style="font-size:13px;margin-bottom:8px;">Cấp '+(st.level+1)+' · Hạng '+rankOf(st.level)+' · '+getRankTitle(st.score)+'</div>'
       +'<div style="font-size:11px;opacity:.9;">Combo cao nhất ×'+st.maxCombo+' · '+getAch().length+'/'+ACHS.length+' huy chương</div>'
@@ -327,7 +334,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   function rstart(){ensureToday();st.boss=null;st.over=false;st.level=0;st.score=0;st.lives=STARTLIVES;st.combo=0;upd();sm('');area.innerHTML='';hideControls();clr();
     var d=document.createElement('div');d.style.textAlign='center';d.className='fade-in';
     var ic=document.createElement('div');ic.style.cssText='font-size:38px;margin-bottom:6px;color:#bd3193;font-weight:700;';ic.textContent='?';
-    var h=document.createElement('h2');h.style.cssText='font-size:18px;margin:0 0 6px;';h.textContent='Sẵn sàng điên đầu?';
+    var h=document.createElement('h2');h.style.cssText='font-size:18px;margin:0 0 6px;';h.textContent='Sẵn sàng hack não?';
     var best=bestScore();
     var p=document.createElement('p');p.style.cssText='color:#64748b;font-size:11px;line-height:1.7;margin:0 0 4px;';p.innerHTML=TYPES.length+' dạng trò · '+TR.length+'+ câu đố · boss mỗi 100 cấp · '+ACHS.length+' huy chương';
     var pRank=document.createElement('p');pRank.style.cssText='color:#f59e0b;font-size:11px;font-weight:600;margin:0 0 4px;';pRank.textContent='Mỗi 100 cấp = 1 hạng · phím 1-4 chọn đáp án, Enter sang cấp tiếp';
@@ -335,7 +342,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     pBest.id='bestText';pBest.textContent=bestText();
     var single=document.createElement('button');single.className='game-btn btn-primary';single.style.cssText='font-size:15px;padding:11px 28px;margin-bottom:10px;';single.textContent='CHƠI NGAY';
     single.onclick=function(){sClick();startGame();};
-    d.appendChild(ic);d.appendChild(h);d.appendChild(p);d.appendChild(pRank);d.appendChild(pBest);var eff=(meta.last===todayKey()||meta.last===dayKey(new Date(Date.now()-864e5)))?meta.streak:0,pS=document.createElement('p');pS.style.cssText='color:#ea580c;font-size:11px;font-weight:600;margin:0 0 8px;';pS.textContent='Chuỗi: '+eff+' ngày (kỷ lục '+meta.best+') · Khiên '+meta.items.shield+' · 50/50 '+meta.items.half+' · +4 giây '+meta.items.freeze+' · Xu '+meta.coins;d.appendChild(pS);var sv=getSave();if(sv&&sv.level>=25){var rb=document.createElement('button');rb.className='game-btn btn-win';rb.style.cssText='font-size:14px;padding:10px 24px;margin:0 6px 10px 0;';rb.textContent='TIẾP TỤC cấp '+(sv.level+1);rb.onclick=function(){sClick();startGame(sv);};d.appendChild(rb);}d.appendChild(single);d.appendChild(modeRow());
+    d.appendChild(ic);d.appendChild(h);d.appendChild(p);d.appendChild(pRank);d.appendChild(pBest);var eff=(meta.last===todayKey()||meta.last===dayKey(new Date(Date.now()-864e5)))?meta.streak:0,pS=document.createElement('p');pS.style.cssText='color:#ea580c;font-size:11px;font-weight:600;margin:0 0 8px;';pS.textContent='Chuỗi: '+eff+' ngày (kỷ lục '+meta.best+') · Khiên '+meta.items.shield+' · 50/50 '+meta.items.half+' · +4 giây '+meta.items.freeze+' · Xu '+meta.coins;d.appendChild(pS);var sv=getSave();if(sv&&sv.level>=25){var rb=document.createElement('button');rb.className='game-btn btn-win';rb.style.cssText='font-size:14px;padding:10px 24px;margin:0 6px 10px 0;';rb.textContent='TIẾP TỤC cấp '+(sv.level+1);rb.onclick=function(){sClick();startGame(sv);};d.appendChild(rb);}d.appendChild(single);var sbt=document.createElement('button');sbt.className='game-btn btn-ghost';sbt.style.cssText='font-size:15px;padding:11px 20px;margin:0 0 10px 6px;';sbt.textContent='⚙ CÀI ĐẶT';sbt.onclick=function(){sClick();showSettings();};d.appendChild(sbt);d.appendChild(modeRow());
     var stTitle=document.createElement('div');stTitle.style.cssText='font-size:13px;font-weight:600;color:#0891b2;margin-bottom:2px;';stTitle.textContent='THỐNG KÊ CÁ NHÂN';
     var stWrap=document.createElement('div');stWrap.innerHTML=statsGrid();
     d.appendChild(stTitle);d.appendChild(stWrap);
@@ -352,9 +359,9 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     loadServerLB();}
 
   function startGame(sv,mode,pt,o){o=o||{};stopSprint();var dr=touchStreak();if((mode||'normal')==='normal'&&!pt&&(!o.kind||o.kind==='solo')){stats.gamesPlayed++;saveStats();}
-    st.level=0;st.score=0;st.lives=STARTLIVES;st.over=false;st.playing=true;st.paused=false;st.combo=0;st.maxCombo=0;st.noMiss=0;st.giftLevel=-1;st.bossDone=-1;st.resolved=false;ensureToday();st.wrong=[];st.wby={};st.boss=null;st.shield=false;st.mode=mode||'normal';st.pt=pt||null;st.o=o;st.kind=o.kind||'solo';st.multi=!!o.multi;st.lock=!!o.lock;st.target=o.target||null;st.seedBase=o.seed||(((_MR()*4294967295)>>>0)+1);st.serial=0;bags={};var dI=o.lock?1:dv();st.lives=[7,5,3][dI];st.timeMul=[1.3,1,.75][dI];st.diffC=[.8,1,1.5][dI];st.coinMul=1;st.free=0;st.perkLevel=-1;st.revItem=null;
+    st.level=0;st.score=0;st.lives=STARTLIVES;st.over=false;st.playing=true;st.paused=false;st.combo=0;st.maxCombo=0;st.noMiss=0;st.giftLevel=-1;st.bossDone=-1;st.resolved=false;ensureToday();st.wrong=[];st.wby={};st.boss=null;st.shield=false;st.mode=mode||'normal';st.pt=pt||null;st.o=o;st.kind=o.kind||'solo';st.multi=!!o.multi;st.lock=!!o.lock;st.target=o.target||null;st.seedBase=o.seed||(((_MR()*4294967295)>>>0)+1);st.serial=0;bags={};var dI=o.lock?1:dv();st.lives=MAXLIVES;st.timeMul=[1.3,1,.75][dI];st.diffC=[.8,1,1.5][dI];st.coinMul=1;st.free=0;st.perkLevel=-1;st.revItem=null;
     quests.score=0;saveQuests();
-    if(sv&&typeof sv.level==='number'){st.level=sv.level;st.score=sv.score||0;st.lives=Math.max(3,Math.min(MAXLIVES,sv.lives||3));st.giftLevel=st.level;}
+    if(sv&&typeof sv.level==='number'){st.level=sv.level;st.score=sv.score||0;st.lives=MAXLIVES;st.giftLevel=st.level;}
     upd();sm('');area.innerHTML='';clr();showControls();rlvl();if(dr)toast(dr);if(st.mode==='sprint')beginSprint();}
 
   function gover(){clr();earn(st.score);try{localStorage.removeItem(SAVE_KEY);}catch(e){}sm('');area.innerHTML='';hideControls();
@@ -520,7 +527,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   ['Quốc hoa của Việt Nam thường được nhắc đến là hoa gì?','Hoa sen','Hoa hồng','Hoa cúc','Hoa lan'],
   ['Con vật nào là biểu tượng của nước Úc?','Kanguru','Gấu trúc','Sư tử','Voi'],
   ['Gấu trúc là biểu tượng của nước nào?','Trung Quốc','Nhật Bản','Ấn Độ','Thái Lan'],
-  ['Nào là một ngôn ngữ lập trình?','Python','Cobra','Anaconda','Viper'],
+  ['Nào là một ngôn ngữ lập trình?','Python','Excel','Photoshop','Chrome'],
   ['Ai là người đầu tiên đặt chân lên Mặt Trăng?','Neil Armstrong','Yuri Gagarin','Buzz Lightyear','Elon Musk'],
   ['Chủ tịch Hồ Chí Minh sinh ra ở tỉnh nào?','Nghệ An','Hà Tĩnh','Thanh Hóa','Quảng Bình']
   ].forEach(function(x){TR.push({q:x[0],a:x[1],w:x.slice(2)});});
@@ -692,7 +699,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
       if(Math.abs(dur-tgt)<=0.4)win('Cân thời chuẩn! +10');else lose('Giữ '+dur.toFixed(1)+'s, cần '+tgt+'s ±0.4s');}
     btn.addEventListener('pointerdown',onDown);btn.addEventListener('pointerup',onUp);btn.addEventListener('pointercancel',onUp);
     d.appendChild(info);d.appendChild(btn);area.appendChild(d);}
-  function gOdd(){var pairs=[['O','0'],['l','1'],['I','l'],['+','t'],[':',';'],['8','B'],['v','w']];var pr=pk(pairs),common=pr[0],odd=pr[1],gs=6+Math.floor(df()*3),oi=ri(0,gs-1);
+  function gOdd(){var pairs=[['O','0'],['l','1'],['b','d'],['+','t'],[':',';'],['8','B'],['v','w']];var pr=pk(pairs),common=pr[0],odd=pr[1],gs=6+Math.floor(df()*3),oi=ri(0,gs-1);
     var d=hd('Tìm cái KHÁC',gs+' ô');var grid=document.createElement('div');grid.className='grid3';
     for(var i=0;i<gs;i++){var c=document.createElement('button');c.className='game-btn';c.style.cssText='font-size:20px;padding:9px 0;font-weight:700;';c.textContent=(i===oi)?odd:common;
       (function(o){c.onclick=function(){sClick();if(o)win('Mắt thám tử! +10');else lose('Sai! Ô đó giống hệt.');};})(i===oi);grid.appendChild(c);}
@@ -766,7 +773,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   function gRPS(){var choices=['Kéo','Búa','Bao'],beats={'Kéo':'Búa','Búa':'Bao','Bao':'Kéo'};
     var comp=pk(choices),correct=beats[comp];var opts=sh(choices);
     quiz4('Máy ra "'+comp+'"! Bạn ra gì để THẮNG?',opts,opts.indexOf(correct),'Đánh bại máy! +10');}
-  function gCoin(){var d=hd('Đồng xu sắp tung! Bạn đoán?','Hoàn toàn dựa vào may mắn — điên đầu đúng không?');
+  function gCoin(){var d=hd('Đồng xu sắp tung! Bạn đoán?','Hoàn toàn dựa vào may mắn — hack não đúng không?');
     var row=br();var done=false;
     ['Ngửa','Sấp'].forEach(function(g){var b=document.createElement('button');b.className='game-btn btn-primary';b.style.cssText='font-size:16px;padding:12px 28px;';b.textContent=g;
       b.onclick=function(){sClick();if(done)return;done=true;dis();var result=RND()<0.5?'Ngửa':'Sấp';
@@ -831,19 +838,19 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   function saveProg(){var o=getSave();if(o&&o.level>st.level)return;try{localStorage.setItem(SAVE_KEY,JSON.stringify({level:st.level,score:st.score,lives:st.lives}));}catch(e){}}
   var TL={};'correct=Nút đúng|wait=Chờ đợi|order=Thứ tự|stroop=Màu chữ|escape=Nút né|math=Toán|biggest=Lớn/nhỏ nhất|memory=Trí nhớ|rapid=Bấm nhanh|hold=Giữ nút|oddone=Tìm khác|reaction=Phản xạ|typing=Gõ chữ|opposite=Ngược hướng|count=Đếm|exacttime=Đúng giờ|whack=Đập chuột|criteria=Tiêu chí|trick=Câu mẹo|quiz=Kiến thức|cookie=Cookie giả|simon=Simon nói|lights=Dãy đèn|slider=Thanh trượt'.split('|').forEach(function(x){var p=x.split('=');TL[p[0]]=p[1];});
   function reviewBox(){var w=st.wrong||[],b=document.createElement('div');if(!w.length)return b;
-    b.style.cssText='background:#f8fafc;border-radius:10px;padding:8px 10px;margin:0 0 10px;text-align:left;font-size:11px;color:#334155;max-height:150px;overflow-y:auto;';
+    b.style.cssText='background:#f8fafc;border-radius:10px;padding:8px 10px;margin:0 0 10px;text-align:left;font-size:11px;color:#334155;max-height:230px;overflow-y:auto;';
     var best='',bn=0;for(var k in st.wby)if(st.wby[k]>bn){bn=st.wby[k];best=k;}
     var h=document.createElement('div');h.style.cssText='font-weight:700;color:#bd3193;margin-bottom:4px;';h.textContent='XEM LẠI CÂU SAI · hay sai nhất: '+(TL[best]||best)+' ×'+bn;b.appendChild(h);
-    w.slice(-6).reverse().forEach(function(x){var r=document.createElement('div');r.style.cssText='padding:2px 0;border-top:1px solid rgba(15,23,42,.06);';r.textContent=(x.q?x.q+' → ':'')+x.m;b.appendChild(r);});return b;}
+    w.slice(-6).reverse().forEach(function(x){var r=document.createElement('div');r.style.cssText='padding:2px 0;border-top:1px solid rgba(15,23,42,.06);';r.textContent=(x.q?x.q+' → ':'')+x.m+(x.e?'  💡 '+x.e:'');b.appendChild(r);});return b;}
   function wn(a,k){var o={},i=0,c=[-3,-2,-1,1,2,3,5,-5,10,-10];while(Object.keys(o).length<k&&i++<200){var w=a+pk(c);if(w!==a&&w>=0)o[w]=1;}return Object.keys(o).map(Number);}
   function qa(key,pool,ok){var it=draw(key,pool),w=it[2]||sh(pool.map(function(x){return x[1];}).filter(function(x,i,a){return x!==it[1]&&a.indexOf(x)===i;})).slice(0,3);quizC(it[0],it[1],w,ok||'Chính xác! +10');}
   var CAP=[['Thủ đô của Nhật Bản?','Tokyo'],['Thủ đô của Pháp?','Paris'],['Thủ đô của Thái Lan?','Bangkok'],['Thủ đô của Hàn Quốc?','Seoul'],['Thủ đô của Trung Quốc?','Bắc Kinh'],['Thủ đô của Ý?','Roma'],['Thủ đô của Đức?','Berlin'],['Thủ đô của Anh?','Luân Đôn'],['Thủ đô của Úc?','Canberra'],['Thủ đô của Nga?','Moscow'],['Thủ đô của Ai Cập?','Cairo'],['Thủ đô của Lào?','Viêng Chăn'],['Thủ đô của Campuchia?','Phnom Penh'],['Thủ đô của Indonesia?','Jakarta']];
   var CHEM=[['vàng','Au'],['bạc','Ag'],['sắt','Fe'],['natri','Na'],['oxi','O'],['cacbon','C'],['canxi','Ca'],['kali','K'],['đồng','Cu'],['hiđro','H']].map(function(x){return ['Ký hiệu hóa học của '+x[0]+'?',x[1]];});
-  var VNP=[['Vịnh Hạ Long thuộc tỉnh nào?','Quảng Ninh'],['Đỉnh núi cao nhất Việt Nam?','Fansipan'],['Cầu Rồng nổi tiếng ở thành phố nào?','Đà Nẵng'],['Chợ nổi Cái Răng ở thành phố nào?','Cần Thơ'],['Lăng Chủ tịch Hồ Chí Minh ở đâu?','Hà Nội'],['Nhà thờ Đức Bà nằm ở đâu?','TP.HCM'],['Thành nhà Hồ thuộc tỉnh nào?','Thanh Hóa'],['Danh thắng Tràng An thuộc tỉnh nào?','Ninh Bình'],['Thị trấn Sa Pa thuộc tỉnh nào?','Lào Cai']];
+  var VNP=[['Vịnh Hạ Long thuộc tỉnh nào?','Quảng Ninh',['Hải Phòng','Thanh Hóa','Nghệ An']],['Đỉnh núi cao nhất Việt Nam?','Fansipan',['Bà Nà','Yên Tử','Langbiang']],['Cầu Rồng nổi tiếng ở thành phố nào?','Đà Nẵng',['Huế','Hà Nội','Cần Thơ']],['Chợ nổi Cái Răng ở thành phố nào?','Cần Thơ',['Đà Nẵng','Huế','Hải Phòng']],['Lăng Chủ tịch Hồ Chí Minh ở đâu?','Hà Nội',['Huế','Đà Nẵng','TP.HCM']],['Nhà thờ Đức Bà nằm ở đâu?','TP.HCM',['Hà Nội','Cần Thơ','Hải Phòng']],['Thành nhà Hồ thuộc tỉnh nào?','Thanh Hóa',['Nghệ An','Ninh Bình','Hà Tĩnh']],['Danh thắng Tràng An thuộc tỉnh nào?','Ninh Bình',['Thanh Hóa','Quảng Ninh','Lạng Sơn']],['Thị trấn Sa Pa thuộc tỉnh nào?','Lào Cai',['Lai Châu','Hà Giang','Sơn La']]];
   var PLN=[['Hành tinh lớn nhất Hệ Mặt Trời?','Sao Mộc'],['Hành tinh có vành đai nổi tiếng nhất?','Sao Thổ'],['"Hành tinh đỏ" là hành tinh nào?','Sao Hỏa'],['Hành tinh nóng nhất Hệ Mặt Trời?','Sao Kim'],['Hành tinh xa Mặt Trời nhất?','Sao Hải Vương'],['Hành tinh có sự sống mà ta biết?','Trái Đất']];
   var ANT=[['nóng','lạnh'],['cao','thấp'],['nhanh','chậm'],['sáng','tối'],['to','nhỏ'],['vui','buồn'],['dài','ngắn'],['mới','cũ'],['nặng','nhẹ'],['giàu','nghèo'],['yêu','ghét']].map(function(x){return ['Trái nghĩa của "'+x[0]+'"?',x[1]];});
   var ENG=[['Apple','Quả táo'],['Dog','Con chó'],['House','Ngôi nhà'],['Water','Nước'],['Book','Quyển sách'],['Red','Màu đỏ'],['Cat','Con mèo'],['Sun','Mặt trời'],['Teacher','Giáo viên'],['Friend','Bạn bè'],['Moon','Mặt trăng']].map(function(x){return ['Tiếng Anh: "'+x[0]+'" nghĩa là gì?',x[1]];});
-  var PRV=[['Có công mài sắt, có ngày nên ___','kim'],['Ăn quả nhớ kẻ trồng ___','cây'],['Uống nước nhớ ___','nguồn'],['Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi ___','cao'],['Lá lành đùm lá ___','rách'],['Học ăn, học nói, học gói, học ___','mở'],['Tốt gỗ hơn tốt ___','nước sơn'],['Gần mực thì đen, gần ___ thì sáng','đèn'],['Thất bại là mẹ của ___','thành công']].map(function(x){return ['Điền từ: "'+x[0]+'"',x[1]];});
+  var PRV=[['Có công mài sắt, có ngày nên ___','kim'],['Ăn quả nhớ kẻ trồng ___','cây'],['Uống nước nhớ ___','nguồn'],['Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi ___','cao'],['Lá lành đùm lá ___','rách'],['Học ăn, học nói, học gói, học ___','mở'],['Tốt gỗ hơn tốt ___','nước sơn'],['Gần mực thì đen, gần ___ thì rạng','đèn'],['Thất bại là mẹ của ___','thành công']].map(function(x){return ['Điền từ: "'+x[0]+'"',x[1]];});
   var UNT=[['3 giờ bằng bao nhiêu phút?','180',['120','240','300']],['2 km = ? m','2000',['200','20000','1000']],['500 g = ? kg','0,5',['5','0,05','50']],['1,5 lít = ? ml','1500',['150','15000','1050']],['2 tuần = ? ngày','14',['10','12','16']],['1 giờ 30 phút = ? phút','90',['80','100','130']],['3 m = ? cm','300',['30','3000','103']]];
   function gCookie(){var d=hd('Đóng bảng cookie','Chỉ nút × thật mới đóng được · nút to là bẫy');var bx=document.createElement('div');
     bx.style.cssText='position:relative;border:2px solid #cbd5e1;border-radius:12px;padding:26px 12px 12px;background:#f8fafc;text-align:left;font-size:11px;min-height:120px;';
@@ -889,19 +896,24 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     cap:function(){qa('cap',CAP);},chem:function(){qa('chem',CHEM);},vnp:function(){qa('vnp',VNP);},planet:function(){qa('pln',PLN);},anto:function(){qa('ant',ANT);},eng:function(){qa('eng',ENG);},prov:function(){qa('prv',PRV);},unit:function(){qa('unt',UNT);}};
   TYPES=TYPES.concat(Object.keys(NEW));
   // ===== v4: chuỗi ngày, vật phẩm, phím tắt, thanh thời gian =====
-  var ITM={shield:{n:'Khiên'},half:{n:'50/50'},freeze:{n:'+4 giây'}},ITM_IDS=['shield','half','freeze'],META_KEY='voly_meta_v1',meta={streak:0,best:0,last:'',items:{shield:1,half:1,freeze:1},coins:0,sprintBest:0,set:{},name:'',daily:null,rev:[]},ib={};
+  var ITM={shield:{n:'Khiên'},half:{n:'50/50'},freeze:{n:'+4 giây'},heal:{n:'Hồi mạng'},reroll:{n:'Đổi câu'},hint:{n:'Gợi ý'},skip:{n:'Qua cấp'},dbl:{n:'Nhân xu'}},ITM_IDS=['shield','half','freeze','heal','reroll','hint','skip','dbl'],META_KEY='voly_meta_v1',meta={streak:0,best:0,last:'',items:{shield:1,half:1,freeze:1,heal:1,reroll:1,hint:0,skip:0,dbl:0},coins:0,sprintBest:0,set:{},name:'',daily:null,rev:[]},ib={};
   try{var _m=JSON.parse(localStorage.getItem(META_KEY)||'{}');if(_m&&typeof _m==='object'){meta.streak=Math.max(0,Math.floor(+_m.streak)||0);meta.best=Math.max(0,Math.floor(+_m.best)||0);meta.last=typeof _m.last==='string'?_m.last:'';meta.coins=Math.max(0,Math.floor(+_m.coins)||0);meta.sprintBest=Math.max(0,Math.floor(+_m.sprintBest)||0);meta.set=(_m.set&&typeof _m.set==='object')?_m.set:{};meta.name=typeof _m.name==='string'?_m.name.replace(/[<>]/g,'').slice(0,12):'';meta.daily=(_m.daily&&typeof _m.daily==='object')?{date:String(_m.daily.date||''),best:Math.max(0,Math.floor(+_m.daily.best)||0)}:null;meta.rev=Array.isArray(_m.rev)?_m.rev.filter(function(x){return x&&typeof x.q==='string'&&Array.isArray(x.o)&&x.o.length>=2&&x.o.length<=4&&x.o.every(function(y){return typeof y==='string';})&&typeof x.c==='number'&&x.c>=0&&x.c<x.o.length;}).slice(0,60):[];var _it=_m.items||{};ITM_IDS.forEach(function(k){if(_it[k]!==undefined)meta.items[k]=Math.max(0,Math.min(99,Math.floor(+_it[k])||0));});}}catch(e){}
   function saveMeta(){try{localStorage.setItem(META_KEY,JSON.stringify(meta));}catch(e){}}
   function addItem(k,n){meta.items[k]=Math.min(99,(meta.items[k]||0)+n);saveMeta();updItems();}
   function touchStreak(){var t=todayKey();if(meta.last===t)return '';var y=dayKey(new Date(Date.now()-864e5));meta.streak=(meta.last===y)?meta.streak+1:1;meta.last=t;if(meta.streak>meta.best)meta.best=meta.streak;
     var k=ITM_IDS[meta.streak%3],ex='';addItem(k,1);if(meta.streak%7===0){ITM_IDS.forEach(function(x){addItem(x,1);});ex=' + thưởng tuần: đủ 3 vật phẩm!';}saveMeta();return 'Chuỗi '+meta.streak+' ngày! +1 '+ITM[k].n+ex;}
-  function updItems(){var L={shield:'Khiên',half:'50/50',freeze:'+4 giây'};for(var k in ib){ib[k].textContent=L[k]+' ×'+meta.items[k]+(k==='shield'&&st.shield?' ✓':'');ib[k].disabled=meta.items[k]<1||(k==='shield'&&st.shield)||!!st.lock;}}
+  function updItems(){for(var k in ib){var on=(k==='shield'&&st.shield)||(k==='dbl'&&st.coinMul>1);ib[k].textContent=ITM[k].n+' ×'+meta.items[k]+(on?' ✓':'');ib[k].disabled=meta.items[k]<1||on||!!st.lock;}}
   function useItem(k){if(st.lock){sm('Không dùng vật phẩm trong chế độ này','#dc2626');return;}if(!st.playing||st.paused||st.resolved||st.over||meta.items[k]<1)return;var q=st.q4;
     if(k==='shield'){if(st.shield)return;st.shield=true;}
     else if(k==='half'){if(!q||q.used||q.row.children.length<3){sm('50/50 chỉ dùng được cho câu trắc nghiệm 4 đáp án (1 lần/câu)','#dc2626');return;}var w=[];for(var i=0;i<q.row.children.length;i++)if(i!==q.ci)w.push(i);
       sh(w).slice(0,2).forEach(function(i){q.row.children[i].disabled=true;q.row.children[i].style.opacity='.2';});q.used=true;}
-    else{if(!q||!q.add){sm('+4 giây chỉ dùng được khi có thanh thời gian (từ cấp 31)','#dc2626');return;}q.add(4000);}
-    meta.items[k]--;saveMeta();sClick();updItems();}
+    else if(k==='freeze'){if(!q||!q.add){sm('+4 giây chỉ dùng được khi có thanh thời gian (từ cấp 31)','#dc2626');return;}q.add(4000);}
+    else if(k==='heal'){if(st.lives>=MAXLIVES){sm('Mạng đã đầy rồi!','#dc2626');return;}st.lives++;}
+    else if(k==='dbl'){if(st.coinMul>1)return;st.coinMul=2;}
+    else if(k==='hint'){if(!q||q.used||q.row.children.length<3){sm('Gợi ý chỉ dùng cho câu trắc nghiệm (1 lần/câu)','#dc2626');return;}q.row.children[q.ci].style.outline='3px solid #059669';q.used=true;}
+    else if(k==='reroll'){meta.items[k]--;saveMeta();sClick();rlvl();upd();cnt('us');return;}
+    else if(k==='skip'){if(st.boss){sm('Không thể qua cấp khi đang đánh BOSS','#dc2626');return;}meta.items[k]--;saveMeta();sClick();clr();st.level++;if(st.level>=TOTAL){uwin();return;}upd();rlvl();cnt('us');return;}
+    meta.items[k]--;saveMeta();sClick();updItems();upd();cnt('us');}
   ITM_IDS.forEach(function(k){var b=document.createElement('button');b.className='game-btn btn-sm';b.onclick=function(){useItem(k);};controls.appendChild(b);ib[k]=b;});
   function qBar(ci){var d=area.lastElementChild,row=d&&d.lastElementChild;if(!row)return;st.q4={row:row,ci:ci,used:false};if(st.level<30)return;
     var total=Math.round(Math.max(5000,15000-Math.floor(st.level/100)*200)*(st.timeMul||1)),t0=Date.now(),bar=document.createElement('div'),fill=document.createElement('div');
@@ -931,7 +943,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     var bd2=mkBtn('','btn-ghost',null);function ld(){bd2.textContent='Độ khó: '+DN[dv()];}ld();bd2.style.display='block';bd2.style.margin='6px auto';bd2.onclick=function(){sClick();meta.set.diff=(dv()+1)%3;saveMeta();ld();};d.appendChild(bd2);
     var bn2=mkBtn('Đổi tên: '+(meta.name||'(chưa đặt)'),'btn-ghost',function(){askName(showSettings);});bn2.style.display='block';bn2.style.margin='6px auto';d.appendChild(bn2);
     d.appendChild(mkBtn('Quay lại','',rstart));}
-  function showShop(){var d=panel('Cửa hàng','Cuối mỗi ván, cứ 10 điểm = 1 xu.'),info=document.createElement('p'),PR={shield:30,half:20,freeze:20},bs={};info.style.cssText='font-weight:700;color:#ea580c;margin:0 0 8px;';d.appendChild(info);
+  function showShop(){var d=panel('Cửa hàng','Cuối mỗi ván, cứ 10 điểm = 1 xu.'),info=document.createElement('p'),PR={shield:30,half:20,freeze:20,heal:25,reroll:15,hint:35,skip:40,dbl:30},bs={};info.style.cssText='font-weight:700;color:#ea580c;margin:0 0 8px;';d.appendChild(info);
     function ref(){info.textContent='Xu của bạn: '+meta.coins;ITM_IDS.forEach(function(k){bs[k].textContent='Mua '+ITM[k].n+' — '+PR[k]+' xu (đang có '+meta.items[k]+')';});}
     ITM_IDS.forEach(function(k){var b=mkBtn('','btn-primary',function(){if(meta.coins<PR[k]){sm('Chưa đủ xu!','#dc2626');return;}meta.coins-=PR[k];addItem(k,1);saveMeta();sClick();sm('Đã mua '+ITM[k].n,'#059669');ref();});b.style.display='block';b.style.margin='6px auto';bs[k]=b;d.appendChild(b);});
     ref();d.appendChild(mkBtn('Quay lại','',rstart));}
@@ -951,12 +963,12 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   function modeRow(){var w=document.createElement('div');
     if(pendingCh){var bn=document.createElement('div');bn.style.cssText='background:rgba(189,49,147,.1);border:1px solid #bd3193;border-radius:10px;padding:8px;margin-bottom:8px;font-size:12px;';bn.textContent=pendingCh.name+' thách bạn vượt '+pendingCh.score+' điểm (cấp '+(pendingCh.level+1)+')!';bn.appendChild(document.createElement('br'));bn.appendChild(mkBtn('NHẬN THÁCH ĐẤU','btn-primary',function(){sClick();startChallenge(pendingCh);}));w.appendChild(bn);}
     var r=document.createElement('div');r.style.cssText='display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:10px;';
-    var L=[['LUYỆN TẬP',showPractice],['60 GIÂY',function(){startGame(null,'sprint');}],['THÁCH ĐẤU',showChallenge],['NHIỀU NGƯỜI',showMP],['BỘ CÂU HỎI RIÊNG',showCustom],['CỬA HÀNG',showShop],['CÀI ĐẶT',showSettings],['HƯỚNG DẪN',function(){showTutorial();}]];
+    var L=[['LUYỆN TẬP',showPractice],['60 GIÂY',function(){startGame(null,'sprint');}],['THÁCH ĐẤU',showChallenge],['NHIỀU NGƯỜI',showMP],['BỘ CÂU HỎI RIÊNG',showCustom],['CỬA HÀNG',showShop]];
     if(meta.rev.length)L.splice(1,0,['ÔN TẬP ('+meta.rev.length+')',function(){st.ptKey='review';startGame(null,'practice',['review'],{kind:'review'});}]);
     L.forEach(function(x){r.appendChild(mkBtn(x[0],'btn-ghost',function(){sClick();x[1]();}));});
     var bd=mkBtn('ĐỘ KHÓ: '+DN[dv()],'btn-ghost',function(){sClick();meta.set.diff=(dv()+1)%3;saveMeta();bd.textContent='ĐỘ KHÓ: '+DN[dv()];});r.appendChild(bd);w.appendChild(r);return w;}
   var tutDone=false;function tutSeen(){try{return tutDone||localStorage.getItem('voly_tut_v1')==='1';}catch(e){return true;}}
-  function showTutorial(){var T=[['Cách chơi','Mỗi cấp là một thử thách ngẫu nhiên. Làm đúng để lên cấp, sai mất 1 mạng. Hết mạng là thua. Có hơn 120 dạng trò và hàng trăm câu đố nên luôn có cái mới.'],['Combo và Boss','Đúng liên tiếp được điểm thưởng (combo). Mỗi 100 cấp gặp BOSS: phải thắng 3 thử thách liên tiếp. Từ cấp 31, câu trắc nghiệm có thanh thời gian.'],['Vật phẩm','Khiên chặn một lần sai. 50/50 loại 2 đáp án sai. +4 giây thêm giờ. Nhận thêm khi chơi mỗi ngày, làm nhiệm vụ hoặc đổi xu ở Cửa hàng. Phím 1-4 chọn đáp án.']],i=0;
+  function showTutorial(){var T=[['Cách chơi','Mỗi cấp là một thử thách ngẫu nhiên. Làm đúng để lên cấp, sai mất 1 mạng. Hết mạng là thua. Có hơn 120 dạng trò và hàng trăm câu đố nên luôn có cái mới.'],['Combo và Boss','Đúng liên tiếp được điểm thưởng (combo). Mỗi 100 cấp gặp BOSS: phải thắng 3 thử thách liên tiếp. Từ cấp 31, câu trắc nghiệm có thanh thời gian.'],['Vật phẩm','Khiên chặn một lần mất mạng; 50/50 loại 2 đáp án sai; +4 giây thêm giờ; Hồi mạng +1 mạng; Đổi câu lấy câu khác; Gợi ý tô viền đáp án đúng; Qua cấp bỏ cấp không mất mạng; Nhân xu gấp đôi xu cuối ván. Mua bằng xu ở Cửa hàng, nhận thêm từ chuỗi ngày, vòng quay và rương boss.']],i=0;
     (function show(){var d=panel(T[i][0]+' ('+(i+1)+'/'+T.length+')',T[i][1]);d.appendChild(mkBtn(i<T.length-1?'Tiếp →':'Bắt đầu!','btn-primary',function(){sClick();if(i<T.length-1){i++;show();}else{tutDone=true;try{localStorage.setItem('voly_tut_v1','1');}catch(e){}rstart();}}));})();}
   var _rs=rstart;rstart=function(){stopSprint();_rs();if(!tutSeen())showTutorial();};
   // ---- thử thách mới
@@ -1068,8 +1080,8 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   var FOOD=[['Món nước nổi tiếng Hà Nội, có bánh phở và thịt bò hoặc gà?','Phở'],['Món bún nổi tiếng xứ Huế?','Bún bò Huế'],['Món bánh tráng cuốn tôm thịt, rau sống, chấm nước mắm?','Gỏi cuốn'],['Bánh vuông gói lá dong, ăn dịp Tết?','Bánh chưng'],['Bánh hình trụ gói lá, ăn Tết miền Nam?','Bánh tét'],['Nước chấm nổi tiếng làm từ cá muối?','Nước mắm'],['Thức uống cà phê pha sữa đặc kiểu Việt?','Cà phê sữa'],['Bánh giòn vàng nhân tôm thịt, đổ bằng bột nghệ?','Bánh xèo']];
   var MUS=[['Nhạc cụ có 6 dây, gảy hoặc quạt?','Đàn guitar'],['Nhạc cụ có 88 phím?','Đàn piano'],['Nhạc cụ truyền thống Việt Nam chỉ có một dây?','Đàn bầu'],['Nhạc cụ làm từ ống tre, thổi ra âm thanh trong?','Sáo trúc'],['Nhạc cụ dùng dùi để đánh?','Trống'],['Nhạc cụ có vĩ kéo, hai dây truyền thống?','Đàn nhị']];
   var SPT=[['Môn thể thao ghi bàn bằng chân, mỗi đội 11 người?','Bóng đá'],['Môn thể thao ném bóng vào rổ?','Bóng rổ'],['Môn đập bóng qua lưới bằng tay, mỗi đội 6 người?','Bóng chuyền'],['Môn dùng bàn và quả bóng nhỏ, vợt gỗ?','Bóng bàn'],['Môn dùng vợt và quả cầu lông?','Cầu lông'],['Môn dùng gậy đánh bóng nhỏ vào lỗ trên sân cỏ?','Golf']];
-  var GE2=[['Lục địa nào lớn nhất?','Châu Á'],['Lục địa nào lạnh nhất, phủ đầy băng?','Châu Nam Cực'],['Đại dương nào lớn nhất?','Thái Bình Dương'],['Sa mạc nóng lớn nhất thế giới?','Sahara'],['Lục địa nào có sa mạc Sahara?','Châu Phi'],['Brazil nằm ở lục địa nào?','Nam Mỹ']];
-  var TEC=[['Thiết bị nào dùng để di chuyển con trỏ trên màn hình?','Chuột'],['Thiết bị nào dùng để gõ chữ?','Bàn phím'],['Mạng toàn cầu kết nối các máy tính gọi là gì?','Internet'],['Ký hiệu @ thường dùng trong gì?','Địa chỉ email'],['Thiết bị nào phát âm thanh ra ngoài?','Loa'],['Bộ phận nào được xem là bộ não của máy tính?','CPU']];
+  var GE2=[['Lục địa nào lớn nhất?','Châu Á',['Châu Phi','Châu Âu','Châu Mỹ']],['Lục địa nào lạnh nhất, phủ đầy băng?','Châu Nam Cực',['Châu Á','Châu Âu','Châu Phi']],['Đại dương nào lớn nhất?','Thái Bình Dương',['Đại Tây Dương','Ấn Độ Dương','Bắc Băng Dương']],['Sa mạc nóng lớn nhất thế giới?','Sahara',['Gobi','Kalahari','Atacama']],['Lục địa nào có sa mạc Sahara?','Châu Phi',['Châu Á','Châu Âu','Nam Mỹ']],['Brazil nằm ở lục địa nào?','Nam Mỹ',['Bắc Mỹ','Châu Phi','Châu Á']]];
+  var TEC=[['Thiết bị nào dùng để di chuyển con trỏ trên màn hình?','Chuột',['Loa','Màn hình','Máy in']],['Thiết bị nào dùng để gõ chữ?','Bàn phím',['Loa','Màn hình','Máy in']],['Mạng toàn cầu kết nối các máy tính gọi là gì?','Internet',['Bộ nhớ RAM','Màn hình','Ổ cứng']],['Ký hiệu @ thường dùng trong gì?','Địa chỉ email',['Số điện thoại','Mã vạch','Phép tính cộng']],['Thiết bị nào phát âm thanh ra ngoài?','Loa',['Chuột','Bàn phím','Micro']],['Bộ phận nào được xem là bộ não của máy tính?','CPU',['Loa','Màn hình','Bàn phím']]];
   var SPL=[['chia sẻ',['chia xẻ','chìa sẻ','chia sẽ']],['bổ sung',['bổ xung','bỗ sung','bổ sửng']],['sáng suốt',['xáng suốt','sáng xuốt','xáng xuốt']],['chân thành',['trân thành','chân thàng','trân thàng']],['sản xuất',['xản xuất','sản suất','xản suất']],['cuộc sống',['cuộc xống','cuộc sốn','cuộc sông']],['giản dị',['dản dị','giản rị','dản rị']],['lịch sự',['lịch xự','lích sự','lịch sụ']],['tập trung',['tập chung','tập trun','tập chun']],['dự định',['giự định','dự đình','giự đình']]];
   function oneOf(x,k,d,okmsg,wrong){var b=document.createElement('button');b.className='game-btn';b.style.opacity='1';return b;}
   function gSortLen(){var W=['cá','mèo','nhà','sách','chuối','xe đạp','con voi','ngôi sao','hoa hồng'],w=[];sh(W).forEach(function(x){if(w.length<4&&!w.some(function(y){return y.length===x.length;}))w.push(x);});
@@ -1146,10 +1158,38 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
   PG[0][1]+=',round,evenodd';PG[1][1]+=',riddle,idiom,hist,sci,emoji';PG[3][1]+=',tapgreen';PG[4][1]+=',alphatap';
 
   // ===== v8: huy chương, trang thông tin, dạng trò + câu hỏi mới =====
-  var SITE_NAME='5000 Thử Thách Điên Đầu';
+  var SITE_NAME='5000 Thử Thách Hack Não';
   var CONTACT_EMAIL=''; // <-- ĐIỀN EMAIL LIÊN HỆ CỦA BẠN VÀO ĐÂY (ví dụ: lienhe@tenmiencuaban.com)
-  var AM={lv:function(){return st.level+1;},sc:function(){return st.score;},cb:function(){return st.maxCombo;},nm:function(){return st.bestNoMiss;},gm:function(){return stats.gamesPlayed;},tl:function(){return stats.totalLevels;},bs:function(){return stats.bosses||0;},sk:function(){return meta.best||0;},cn:function(){return meta.coins||0;}};
-  var ACHX=`lv25|▲|Hăm lăm|Đến cấp 25|lv|25
+  var AM={lv:function(){return st.level+1;},sc:function(){return st.score;},cb:function(){return st.maxCombo;},nm:function(){return st.bestNoMiss;},gm:function(){return stats.gamesPlayed;},tl:function(){return stats.totalLevels;},bs:function(){return stats.bosses||0;},sk:function(){return meta.best||0;},cn:function(){return meta.coins||0;},us:function(){return xc('us');},sp:function(){return xc('sp');},ch:function(){return xc('ch');},rp:function(){return xc('rp');},rv:function(){return xc('rv');},ls:function(){return xc('ls');},hc:function(){return (typeof X==='object'&&X.hcBest)||0;},kn:function(){return xsum(1);},ok:function(){return xsum();}};
+  var ACHX=`xsk3|☾|Ba ngày liền|Chơi 3 ngày liên tiếp|sk|3
+xsk7|☼|Một tuần|Chơi 7 ngày liên tiếp|sk|7
+xsk14|❖|Hai tuần|Chơi 14 ngày liên tiếp|sk|14
+xsk30|✹|Một tháng|Chơi 30 ngày liên tiếp|sk|30
+xcn500|¤|Có của ăn của để|Tích 500 xu|cn|500
+xcn2000|₫|Đại gia|Tích 2000 xu|cn|2000
+xus1|✚|Biết dùng đồ|Dùng vật phẩm lần đầu|us|1
+xus25|☑|Nghiện đồ chơi|Dùng 25 vật phẩm|us|25
+xus100|⚙|Kho báu di động|Dùng 100 vật phẩm|us|100
+xsp1|☄|Thử vận may|Quay thưởng lần đầu|sp|1
+xsp7|☘|Con cưng may mắn|Quay thưởng 7 lần|sp|7
+xsp30|✿|Hoàng đạo|Quay thưởng 30 lần|sp|30
+xch1|⚑|Mở rương|Nhận rương từ boss|ch|1
+xch5|⚐|Thợ săn rương|Nhận 5 rương boss|ch|5
+xhc200|☠|Sống sót|Sinh tồn đạt 200 điểm|hc|200
+xhc1000|☢|Bất tử|Sinh tồn đạt 1000 điểm|hc|1000
+xrv5|✎|Chăm ôn bài|Ôn tập đúng 5 câu|rv|5
+xrv50|✍|Học bá|Ôn tập đúng 50 câu|rv|50
+xrp1|✉|Mắt thần|Báo một câu hỏi có vấn đề|rp|1
+xtl1000|☰|Cày nghìn cấp|Tổng 1000 cấp qua mọi ván|tl|1000
+xtl5000|☷|Cày vạn dặm|Tổng 5000 cấp qua mọi ván|tl|5000
+xgm50|♡|Fan cứng|Chơi 50 lần|gm|50
+xkn100|✧|Bách khoa|Đúng 100 câu kiến thức|kn|100
+xkn500|✦|Thông thái|Đúng 500 câu kiến thức|kn|500
+xok1000|⌘|Nghìn lần đúng|Tổng 1000 câu trả lời đúng|ok|1000
+xls10|☹|Thất bại là mẹ|Thua 10 ván|ls|10
+xls50|☃|Bất khuất|Thua 50 ván|ls|50
+xls100|☂|Bách chiến bách bại|Thua 100 ván|ls|100
+lv25|▲|Hăm lăm|Đến cấp 25|lv|25
 lv200|◆|Hai trăm|Đến cấp 200|lv|200
 lv300|◇|Ba trăm|Đến cấp 300|lv|300
 lv500|⬢|Nửa nghìn|Đến cấp 500|lv|500
@@ -1192,7 +1232,7 @@ cn1000|$|Đại gia xu|Tích 1000 xu|cn|1000`.split('\n').map(function(l){var f=
 Cố đô Huế nằm ở miền nào?|Miền Trung|Miền Bắc|Miền Nam|Tây Nguyên
 Đà Lạt thuộc vùng nào?|Tây Nguyên|Đông Bắc|Đồng bằng sông Hồng|Tây Bắc
 Việt Nam giáp biển nào ở phía đông?|Biển Đông|Biển Đỏ|Biển Đen|Biển Chết
-Nước nào KHÔNG giáp Việt Nam?|Thái Lan|Lào|Campuchia|Trung Quốc
+Nước nào KHÔNG giáp đất liền với Việt Nam?|Thái Lan|Lào|Campuchia|Trung Quốc
 Mũi Cà Mau nằm ở cực nào của đất liền?|Cực Nam|Cực Bắc|Cực Đông|Cực Tây
 Cột cờ Lũng Cú nằm ở cực nào?|Cực Bắc|Cực Nam|Cực Đông|Cực Tây
 Hải Phòng nổi tiếng với loài hoa nào?|Hoa phượng|Hoa đào|Hoa mai|Hoa sen
@@ -1277,19 +1317,18 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
 
   // --- trang thông tin: hướng dẫn / FAQ / điều khoản / bảo mật / liên hệ
   var GUIDE=[
-   ['Bắt đầu nhanh',`<p>Bấm <b>CHƠI NGAY</b>. Mỗi cấp là một thử thách khác nhau, tổng cộng ${'${TOTAL}'} cấp. Làm đúng để sang cấp tiếp theo, làm sai hoặc hết giờ sẽ mất <b>1 mạng</b>. Hết mạng là thua.</p><p>Mạng khởi đầu là 7 / 5 / 3 tùy độ khó (Dễ / Thường / Khó), tối đa 10 mạng. Cứ qua 50 cấp được tặng thêm 1 mạng.</p><p>Trên máy tính: phím <b>1-4</b> chọn đáp án, <b>Enter</b> sang cấp tiếp.</p>`],
-   ['Điểm, combo và hạng',`<p>Mỗi cấp đúng được <b>+10 điểm</b>. Đúng liên tiếp tạo <b>combo</b>: cứ 5 combo được thêm +5 điểm mỗi cấp. Sai một lần là mất combo.</p><p>Mỗi 100 cấp bạn lên <b>1 hạng</b> và nhận +50 điểm. Điểm số quyết định danh hiệu cuối ván (từ "Gà con chưa lông" đến "VUA trò chơi điên đầu").</p>`],
-   ['Boss mỗi 100 cấp',`<p>Cấp thứ 100, 200, 300... là <b>BOSS</b>. Boss có 3 máu: bạn cần thắng 3 thử thách. Không thể bỏ qua boss. Hạ boss được +100 điểm và +1 mạng.</p>`],
-   ['Các chế độ chơi',`<ul><li><b>Chơi thường</b>: tính điểm, được lên bảng xếp hạng.</li><li><b>Luyện tập</b>: chọn nhóm dạng trò muốn rèn, không mất mạng, không tính điểm, sai thì thử lại.</li><li><b>Chạy nước rút 60 giây</b>: làm càng nhiều càng tốt, sai hoặc bỏ qua bị trừ 5 giây.</li><li><b>Thách đấu</b>: mọi người chơi cùng một bộ đề để so điểm công bằng, kể cả thử thách hôm nay.</li><li><b>Bộ câu hỏi riêng</b>: tự soạn câu hỏi theo dạng <i>Câu hỏi | Đáp án đúng | Sai 1 | Sai 2 | Sai 3</i> rồi luyện hoặc chơi thật.</li></ul>`],
-   ['Nhóm Toán và số',`<p>Tính nhẩm (cộng, trừ, nhân, chia, bảng cửu chương, bình phương, căn), tìm quy luật dãy số, tính giờ, chu vi / diện tích, đoán dấu phép tính, đếm chữ số, so sánh, làm tròn. Mẹo: ước lượng trước khi tính, loại ngay đáp án quá lớn hoặc quá nhỏ.</p>`],
-   ['Nhóm Kiến thức và đố mẹo',`<p>Hơn 200 câu đố mẹo, địa lý, lịch sử, khoa học, văn hóa, động vật, cơ thể, vũ trụ, đời sống. Câu "đố mẹo" thường có bẫy: đọc kỹ từng chữ, đừng trả lời theo phản xạ.</p>`],
-   ['Nhóm Trí nhớ',`<p>Nhớ số, nhớ ô sáng, lật cặp, nhớ mật khẩu. Con số hay ô sáng chỉ hiện vài giây rồi biến mất, hãy nhẩm đọc thầm hoặc chia nhóm 2-3 chữ số để dễ nhớ.</p>`],
-   ['Nhóm Phản xạ',`<p>Nhấn đúng lúc, nhấn nhanh, bắt nút đang né, đập chuột, giữ nút, nhấn các ô theo yêu cầu (số chẵn, bội số, nguyên tố, nguyên âm, đúng loại từ). Ở dạng "đừng nhấn gì cả" hoặc nút bẫy, kiên nhẫn mới là cách thắng. Nhấn nhầm một ô là mất mạng.</p>`],
-   ['Nhóm Chữ và logic',`<p>Gõ chữ, xếp thứ tự bảng chữ cái, tìm từ khác loại, phân loại, suy luận (ai cao nhất), định hướng, màu chữ lừa mắt (Stroop). Mẹo Stroop: nhìn màu mực, bỏ qua nghĩa của chữ.</p>`],
-   ['Vật phẩm, xu và chuỗi ngày',`<ul><li><b>Khiên</b>: đỡ một lần sai, không mất mạng.</li><li><b>50/50</b>: loại bớt hai đáp án sai.</li><li><b>+4 giây</b>: thêm thời gian cho thử thách có đồng hồ.</li><li><b>Xu</b>: cuối mỗi ván cứ 10 điểm được 1 xu, dùng mua vật phẩm trong Cửa hàng.</li><li><b>Chuỗi ngày</b>: chơi liên tiếp mỗi ngày để nhận vật phẩm, đủ 7 ngày có thưởng tuần.</li></ul>`],
-   ['Huy chương và nhiệm vụ',`<p>Có rất nhiều huy chương: theo cấp, điểm, combo, số ván, boss, chuỗi ngày và xu. Huy chương tự mở khi đạt điều kiện, rê chuột hoặc chạm giữ vào huy chương để xem mô tả. Mỗi ngày có 3 nhiệm vụ nhỏ (qua 15 cấp, combo ×3, 200 điểm), hoàn thành được tặng vật phẩm.</p>`],
-   ['Bảng xếp hạng',`<p>Sau khi thua, nhập tên và bấm <b>Lưu lên server</b> để vào Top 20 toàn cầu. Nếu mất mạng, điểm được lưu tạm trên máy và tự đồng bộ lại khi có mạng. Chế độ luyện tập và thách đấu có luật riêng nên có thể không lên bảng.</p>`],
-   ['Mẹo để đi xa',`<ul><li>Bấm <b>Tạm dừng</b> khi cần nghỉ, nhưng tiếp tục sẽ đổi đề và mất combo đang dở.</li><li>Giữ lại <b>Khiên</b> cho các cấp boss.</li><li>Dùng chế độ <b>Luyện tập</b> để rèn nhóm dạng trò hay sai (cuối ván có mục ôn lại câu sai).</li><li>Bật chế độ tối hoặc giảm hiệu ứng trong <b>Cài đặt</b> nếu bạn thấy mỏi mắt.</li></ul>`]
+   ['Bắt đầu nhanh',`<p>Bấm <b>CHƠI NGAY</b>. Game có 5000 cấp, mỗi cấp là một thử thách khác nhau. Làm đúng để lên cấp; làm sai hoặc hết giờ thì mất <b>1 mạng</b>. Hết mạng là thua.</p><p>Mỗi ván bắt đầu với <b>10 mạng</b> (tối đa 10). Cứ qua 50 cấp được tặng thêm 1 mạng nếu bạn đang thiếu.</p><p>Trên máy tính: phím <b>1-4</b> chọn đáp án, <b>Enter</b> sang cấp tiếp. Từ cấp 31, câu trắc nghiệm có thanh thời gian.</p>`],
+   ['Điểm, combo và hạng',`<p>Mỗi cấp đúng được <b>+10 điểm</b>. Đúng liên tiếp tạo <b>combo</b>: cứ 5 combo được thêm +5 điểm mỗi cấp. Sai một lần là mất combo. Mỗi 100 cấp bạn lên <b>1 hạng</b> và nhận +50 điểm. Điểm cuối ván quyết định danh hiệu, từ "Gà con chưa lông" đến "VUA trò chơi hack não".</p>`],
+   ['Boss mỗi 100 cấp',`<p>Cấp 100, 200, 300... là <b>BOSS</b> có 3 máu: bạn phải thắng 3 thử thách liên tiếp và không thể bỏ qua. Mỗi boss có một <b>luật riêng</b>: chỉ 12 giây cho mỗi thử thách, màn hình lật gương, hoặc câu hỏi biến mất sau 3 giây. Hạ boss được +100 điểm, +1 mạng và một <b>rương thưởng</b> (xu hoặc vật phẩm).</p>`],
+   ['Các chế độ chơi',`<ul><li><b>Chơi thường</b>: tính điểm, lên bảng xếp hạng.</li><li><b>Luyện tập</b>: chọn nhóm dạng trò muốn rèn, không mất mạng, không tính điểm.</li><li><b>60 giây</b>: làm càng nhiều càng tốt; sai hoặc bỏ qua bị trừ 5 giây; không tạm dừng được.</li><li><b>Sinh tồn</b>: chỉ 1 mạng, không dùng vật phẩm và tạm dừng, nhưng xu nhận được nhân 3. Có kỷ lục riêng.</li><li><b>Thử thách hôm nay và Thách đấu</b>: mọi người chơi cùng một bộ đề, không dùng vật phẩm để công bằng. Có bảng xếp hạng riêng cho ngày và thanh so điểm ngay trong lúc chơi.</li><li><b>Nhiều người</b>: chơi luân phiên trên cùng một máy.</li><li><b>Bộ câu hỏi riêng</b>: tự soạn câu hỏi theo dạng <i>Câu hỏi | Đáp án đúng | Sai 1 | Sai 2 | Sai 3</i>, rồi chia sẻ bằng link hoặc file .txt.</li></ul>`],
+   ['Năm nhóm dạng trò',`<ul><li><b>Toán và số</b>: tính nhẩm, tìm quy luật, tính giờ, so sánh, phần trăm. Mẹo: ước lượng trước, loại đáp án quá lớn hoặc quá nhỏ.</li><li><b>Kiến thức</b>: hơn 300 câu đố mẹo, địa lý, lịch sử, khoa học, văn hóa, động vật, cơ thể, vũ trụ. Câu đố mẹo thường có bẫy, hãy đọc kỹ từng chữ.</li><li><b>Trí nhớ</b>: nhớ số, ô sáng, lật cặp, mật khẩu. Hãy chia nhóm 2-3 chữ số để dễ nhớ.</li><li><b>Phản xạ</b>: nhấn đúng lúc, bắt nút đang né, giữ nút, nhấn đúng ô. Nhấn nhầm một ô là mất mạng.</li><li><b>Chữ và logic</b>: gõ chữ, xếp thứ tự, tìm từ khác loại, suy luận, màu chữ lừa mắt (nhìn màu mực, bỏ qua nghĩa của chữ).</li></ul>`],
+   ['Bạn có biết? và Ôn tập',`<p>Sau mỗi câu kiến thức, dù đúng hay sai, khung <b>Bạn có biết?</b> sẽ giải thích đáp án và kiến thức liên quan; cấp tiếp theo chờ bạn đọc một chút (bấm "Cấp tiếp theo" để qua ngay). Câu sai được đưa vào <b>Ôn tập</b>: hiện lại sau 1, 3, 7 ngày, làm đúng 4 lần thì xem như đã thuộc. Cuối ván có mục "Xem lại câu sai" kèm giải thích. Có thể tắt trong Cài đặt.</p>`],
+   ['Vật phẩm và xu',`<ul><li><b>Khiên</b>: đỡ một lần sai.</li><li><b>50/50</b>: loại 2 đáp án sai.</li><li><b>+4 giây</b>: thêm giờ cho thử thách có đồng hồ.</li><li><b>Hồi mạng</b>: +1 mạng.</li><li><b>Đổi câu</b>: lấy câu khác, không mất gì.</li><li><b>Gợi ý</b>: viền xanh quanh đáp án đúng của câu trắc nghiệm.</li><li><b>Qua cấp</b>: bỏ qua cấp không mất mạng (không dùng khi đánh boss).</li><li><b>Nhân xu</b>: gấp đôi xu nhận cuối ván.</li></ul><p>Cuối mỗi ván cứ 10 điểm được 1 xu. Dùng xu mua vật phẩm và giao diện màu trong <b>Cửa hàng</b>. Vật phẩm không dùng được ở các chế độ có khóa (Sinh tồn, Thử thách, Thách đấu).</p>`],
+   ['Quay thưởng và chuỗi ngày',`<p>Mỗi ngày được <b>quay thưởng</b> một lần (xu, vật phẩm hoặc jackpot). Chơi liên tiếp mỗi ngày để duy trì <b>chuỗi ngày</b> nhận vật phẩm, đủ 7 ngày có thưởng tuần. Mỗi ngày có 3 nhiệm vụ nhỏ, hoàn thành được tặng vật phẩm.</p>`],
+   ['Kỹ năng và huy chương',`<p>Trang chủ có <b>Kỹ năng theo nhóm</b>: tỉ lệ đúng của bạn ở từng nhóm, kèm nút luyện đúng nhóm yếu nhất. Có <b>hơn 70 huy chương</b> (cấp, điểm, combo, boss, chuỗi ngày, xu, vật phẩm, ôn tập, sinh tồn, thậm chí cả số ván thua), huy chương tự mở khi đạt điều kiện.</p>`],
+   ['Bảng xếp hạng',`<p>Sau khi thua, nhập tên và bấm <b>Lưu lên server</b> để vào Top 20 toàn cầu; nếu mất mạng, điểm được lưu tạm và đồng bộ lại sau. Thử thách hôm nay có bảng xếp hạng riêng cho từng ngày. Bạn cũng có thể tải <b>thẻ thành tích</b> dạng ảnh ở màn kết quả để khoe với bạn bè.</p>`],
+   ['Cài đặt và cài ứng dụng',`<p>Trong Cài đặt: chế độ tối, giảm hiệu ứng, âm thanh, <b>độ khó</b> chọn bộ câu hỏi: <b>Dễ</b> chủ yếu là câu dễ (thời gian ×1,3, xu ×0,8); <b>Thường</b> trộn đều, nhiều câu vừa sức; <b>Khó</b> chủ yếu là câu khó (thời gian ×0,75, xu ×1,5). Số mạng luôn là 10. Thử thách hôm nay và Thách đấu luôn dùng mức Thường để công bằng, <b>chế độ mù màu</b> và bật/tắt Bạn có biết. Nếu trình duyệt hỗ trợ, nút <b>Cài ứng dụng</b> ở chân trang giúp chơi như một app và chơi được khi không có mạng.</p>`],
+   ['Mẹo để đi xa',`<ul><li>Bấm <b>Tạm dừng</b> khi cần nghỉ, nhưng tiếp tục sẽ đổi đề và mất combo đang dở.</li><li>Giữ <b>Khiên</b> và <b>Hồi mạng</b> cho các cấp boss.</li><li>Đọc phần "Bạn có biết?" để nhớ lâu hơn rồi dùng <b>Luyện tập</b> cho nhóm hay sai.</li><li>Hãy thử <b>Sinh tồn</b> khi đã quen, xu thưởng nhân 3.</li></ul>`]
   ];
   var FAQ=[['Dữ liệu của tôi lưu ở đâu?','Tiến độ, huy chương, thống kê, xu và cài đặt lưu ngay trên trình duyệt của bạn (localStorage). Xóa dữ liệu trình duyệt hoặc đổi máy sẽ mất các dữ liệu này.'],['Vì sao điểm của tôi chưa lên bảng xếp hạng?','Có thể do mất kết nối hoặc server đang bận. Điểm được giữ lại trên máy và tự đồng bộ ở lần mở trang sau. Điểm bất thường (vượt mức tối đa có thể đạt) sẽ bị loại.'],['Tại sao tiếp tục sau khi tạm dừng lại đổi đề?','Để tránh việc dừng lại tra cứu đáp án. Bạn sẽ làm lại cấp hiện tại bằng đề mới và mất combo nếu đang làm dở.'],['Bỏ qua cấp có tốn gì không?','Bỏ qua tốn 1 mạng, không được điểm và không dùng được ở cấp boss hoặc khi chỉ còn 1 mạng.'],['Game có miễn phí không?','Hoàn toàn miễn phí, không cần đăng ký tài khoản.'],['Tôi chơi được trên điện thoại, máy tính bảng, máy tính không?','Được. Giao diện tự co giãn theo mọi kích thước màn hình, hỗ trợ cảm ứng và bàn phím.'],['Sao không nghe thấy âm thanh?','Kiểm tra nút Âm thanh trên thanh điều khiển, mục Cài đặt, và chế độ im lặng của thiết bị. Một số trình duyệt chỉ bật âm sau lần chạm đầu tiên.'],['Tôi thấy câu hỏi sai hoặc có lỗi, báo ở đâu?','Vào tab Liên hệ, mô tả câu hỏi hoặc lỗi bạn gặp. Càng chi tiết (cấp, dạng trò, thiết bị) càng dễ sửa.'],['Làm sao đặt lại toàn bộ dữ liệu?','Xóa dữ liệu trang web trong cài đặt trình duyệt (cookie và dữ liệu trang). Thao tác này không thể hoàn tác.']];
   var TERMS=`<h3>Điều khoản sử dụng</h3><p>Bằng việc sử dụng trang, bạn đồng ý với các điều khoản dưới đây.</p><ul><li><b>Mục đích:</b> trang cung cấp trò chơi giải trí miễn phí, không mang tính chất cờ bạc, không có giải thưởng bằng tiền.</li><li><b>Sử dụng hợp lý:</b> không dùng công cụ tự động, không can thiệp mã nguồn hoặc dữ liệu để gian lận bảng xếp hạng. Điểm bất thường có thể bị xóa.</li><li><b>Tên hiển thị:</b> không dùng tên chứa nội dung xúc phạm, quảng cáo, lừa đảo hoặc vi phạm pháp luật. Quản trị viên có quyền xóa mục vi phạm.</li><li><b>Nội dung:</b> câu hỏi và giao diện thuộc quyền của chủ trang. Không sao chép để bán lại khi chưa được đồng ý. Bộ câu hỏi riêng do bạn tự soạn chỉ lưu trên máy bạn và bạn chịu trách nhiệm về nội dung đó.</li><li><b>Không bảo đảm:</b> trang được cung cấp "như hiện có", có thể thay đổi, gián đoạn hoặc có sai sót mà không báo trước. Chủ trang không chịu trách nhiệm cho thiệt hại phát sinh từ việc sử dụng.</li><li><b>Thay đổi:</b> điều khoản có thể được cập nhật; việc tiếp tục sử dụng đồng nghĩa với chấp nhận bản mới.</li></ul>`;
@@ -1311,23 +1350,22 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
   var cp=document.createElement('div');cp.textContent='© '+new Date().getFullYear()+' '+SITE_NAME;foot.appendChild(cp);msg.parentNode.appendChild(foot);
   var _rs0=rstart;rstart=function(){_rs0();var d=area.firstChild;if(!d||!d.querySelector('#bestText'))return;var b=mkBtn('📖 Hướng dẫn chơi','btn-ghost',function(){sClick();showInfo('guide');});b.style.display='block';b.style.margin='6px auto';var p0=d.querySelector('.btn-primary');if(p0&&p0.nextSibling)d.insertBefore(b,p0.nextSibling);else d.appendChild(b);};
   // ===== v9: sửa lỗi + 10 tính năng mới =====
-  var X={skill:{},revDay:null,theme:'',owned:{},cb:0,fact:1},XK='voly_x_v1';
+  var X={skill:{},revDay:null,theme:'',owned:{},cb:0,fact:1,c:{}},XK='voly_x_v1';
   try{var _x=JSON.parse(localStorage.getItem(XK)||'{}');if(_x&&typeof _x==='object')Object.keys(_x).forEach(function(k){X[k]=_x[k];});}catch(e){}
-  if(!X.skill||typeof X.skill!=='object')X.skill={};if(!X.owned||typeof X.owned!=='object')X.owned={};
+  if(!X.skill||typeof X.skill!=='object')X.skill={};if(!X.c||typeof X.c!=='object')X.c={};if(!X.owned||typeof X.owned!=='object')X.owned={};
   function sx(){try{localStorage.setItem(XK,JSON.stringify(X));}catch(e){}}
   function gids(i){return PG[i][1].split(',').filter(function(x){return TYPES.indexOf(x)>=0;});}
   function rec(t,ok){var a=X.skill[t]||(X.skill[t]=[0,0]);a[ok?0:1]++;sx();}
   var bossT=null;function bossClr(){if(bossT){clearTimeout(bossT);bossT=null;}area.style.transform='';}
   var BR=[['fast','LUẬT BOSS: chỉ 12 giây cho mỗi thử thách!'],['mirror','LUẬT BOSS: màn hình bị lật gương!'],['hide','LUẬT BOSS: câu hỏi biến mất sau 3 giây, hãy nhớ!']];
-  var FACTS=['Mật ong để kín gần như không bao giờ hỏng.','Bạch tuộc có ba trái tim.','Một ngày trên Sao Kim dài hơn một năm của nó.','Ánh sáng Mặt Trời mất khoảng 8 phút để tới Trái Đất.','Cá heo ngủ bằng cách cho từng nửa bộ não nghỉ lần lượt.','Tháp Eiffel cao thêm vài cm vào mùa hè vì kim loại nở ra.','Việt Nam là một trong những nước xuất khẩu cà phê lớn nhất thế giới.','Xương đùi là xương dài nhất cơ thể người.','Kim cương và than chì đều làm từ cacbon.','Vịnh Hạ Long là Di sản thế giới của UNESCO.','Người trưởng thành có khoảng 206 chiếc xương.','Hồ Gươm còn được gọi là hồ Hoàn Kiếm.'];
   // 1-7 (sửa lỗi) nằm ở các chỗ vá trực tiếp; dưới đây là tính năng mới
-  // F: ghi nhận kỹ năng, Em có biết, luật boss
+  // F: ghi nhận kỹ năng, Bạn có biết, luật boss
   var _w9=win;win=function(t){var ok=!st.resolved&&!st.over;if(ok&&st.curType)rec(st.curType,1);if(bossT){clearTimeout(bossT);bossT=null;}_w9(t);
-    if(ok&&X.fact&&!st.boss&&st.mode!=='sprint'&&gids(1).indexOf(st.curType)>=0&&_MR()<.35){var f=document.createElement('div');f.style.cssText='margin-top:10px;font-size:11px;color:#0891b2;text-align:center';f.textContent='💡 Em có biết? '+FACTS[Math.floor(_MR()*FACTS.length)];area.appendChild(f);}};
-  var _l9=lose;lose=function(t){if(!st.resolved&&!st.over&&st.curType)rec(st.curType,0);if(bossT){clearTimeout(bossT);bossT=null;}_l9(t);};
+    if(ok&&X.fact&&!st.boss&&st.mode!=='sprint')showWhy(true);};
+  var _l9=lose;lose=function(t){var ok=!st.resolved&&!st.over;if(ok&&st.curType)rec(st.curType,0);if(bossT){clearTimeout(bossT);bossT=null;}_l9(t);if(ok&&X.fact&&st.mode!=='sprint')showWhy(false);};
   var _go9=gover;gover=function(){bossClr();var h=document.getElementById('vsHud');if(h)h.remove();_go9();};
   // báo câu sai + luật boss
-  function reportQ(){var q=st.lastQ,lv=st.level+1,ty=st.curType;showInfo('contact');var f=document.getElementById('vcm');if(f)f.value='[Báo câu hỏi] Cấp '+lv+' · dạng '+ty+'\nCâu: '+q+'\nVấn đề: ';}
+  function reportQ(){cnt('rp');var q=st.lastQ,lv=st.level+1,ty=st.curType;showInfo('contact');var f=document.getElementById('vcm');if(f)f.value='[Báo câu hỏi] Cấp '+lv+' · dạng '+ty+'\nCâu: '+q+'\nVấn đề: ';}
   var _rl9=rlvl;rlvl=function(){bossClr();_rl9.apply(null,arguments);
     if(st.playing&&!st.paused&&!st.resolved&&area.firstChild){var a=document.createElement('div');a.style.cssText='text-align:center;margin-top:12px;font-size:10px;color:#94a3b8;cursor:pointer;text-decoration:underline';a.textContent='⚑ Báo câu này có vấn đề';a.onclick=reportQ;area.appendChild(a);}
     if(st.boss&&!st.resolved&&st.playing){var ru=BR[Math.floor(st.level/100)%3];sm(msg.textContent+' · '+ru[1],'#7c3aed');
@@ -1338,7 +1376,7 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
   var CBX=['stroop','inkpick','colorcount'],_dr9=draw;draw=function(k,a){var r=_dr9(k,a);if(k==='T'&&X.cb&&!st.lock){var g=0;while(CBX.indexOf(r)>=0&&g++<30)r=_dr9(k,a);}return r;};
   // Leitner
   function isDue(x){return !x.due||x.due<=todayKey();}
-  revOK=function(){var it=st.revItem;if(!it)return;it.box=(it.box||0)+1;if(it.box>=4)meta.rev=meta.rev.filter(function(x){return x!==it;});else it.due=dayKey(new Date(Date.now()+[0,1,3,7][it.box]*864e5));var d=todayKey();if(!X.revDay||X.revDay.date!==d)X.revDay={date:d,done:0};X.revDay.done++;sx();saveMeta();st.revItem=null;};
+  revOK=function(){var it=st.revItem;if(!it)return;cnt('rv');it.box=(it.box||0)+1;if(it.box>=4)meta.rev=meta.rev.filter(function(x){return x!==it;});else it.due=dayKey(new Date(Date.now()+[0,1,3,7][it.box]*864e5));var d=todayKey();if(!X.revDay||X.revDay.date!==d)X.revDay={date:d,done:0};X.revDay.done++;sx();saveMeta();st.revItem=null;};
   revBad=function(){var it=st.revItem;if(it){it.box=0;it.due=todayKey();saveMeta();}};
   NEW.review=function(){var L=meta.rev.filter(isDue);if(!L.length)L=meta.rev;if(!L.length){qa('hol',HOL);return;}var it=pk(L),ans=it.o[it.c],o=sh(it.o.slice());st.revItem=it;quiz4(it.q,o,o.indexOf(ans),'Nhớ rồi! +10');};
   // thanh so điểm với mục tiêu
@@ -1367,10 +1405,10 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
     r.appendChild(mkBtn('Nhập file','btn-ghost',function(){fi.click();}));r.appendChild(fi);d.insertBefore(r,d.lastChild);};
   // cài đặt: mù màu, em có biết
   var _ss9=showSettings;showSettings=function(){_ss9();var d=area.firstChild,last=d.lastChild;
-    [['cb','Chế độ mù màu (bỏ dạng chỉ dựa vào màu)'],['fact','Hiện "Em có biết?" sau câu kiến thức']].forEach(function(x){var b=mkBtn('','btn-ghost',null);b.style.display='block';b.style.margin='6px auto';function lab(){b.textContent=x[1]+': '+(X[x[0]]?'BẬT':'TẮT');}lab();b.onclick=function(){sClick();X[x[0]]=X[x[0]]?0:1;sx();lab();};d.insertBefore(b,last);});};
+    [['cb','Chế độ mù màu (bỏ dạng chỉ dựa vào màu)'],['fact','Giải thích "Bạn có biết?" sau mỗi câu']].forEach(function(x){var b=mkBtn('','btn-ghost',null);b.style.display='block';b.style.margin='6px auto';function lab(){b.textContent=x[1]+': '+(X[x[0]]?'BẬT':'TẮT');}lab();b.onclick=function(){sClick();X[x[0]]=X[x[0]]?0:1;sx();lab();};d.insertBefore(b,last);});};
   // cửa hàng giao diện
   var TH=[['','Mặc định',0,0],['sea','Biển xanh',150,-110],['forest','Rừng xanh',150,150],['sun','Hoàng hôn',200,60]];
-  var _sh9=showShop;showShop=function(){_sh9();var d=area.firstChild,last=d.lastChild,t=document.createElement('div');t.innerHTML='<p style="font-weight:700;color:#bd3193;margin:12px 0 4px">Giao diện</p>';
+  var _sh9=showShop;showShop=function(){_sh9();var d=area.firstChild,last=d.lastChild,t=document.createElement('div');var ds=document.createElement('p');ds.style.cssText='font-size:11px;color:#64748b;line-height:1.6;margin:8px 0';ds.innerHTML='❤️ <b>Hồi mạng</b>: +1 mạng · 🔄 <b>Đổi câu</b>: lấy câu khác, không mất gì · 💡 <b>Gợi ý</b>: viền xanh quanh đáp án đúng · ⏭ <b>Qua cấp</b>: bỏ qua cấp không mất mạng (không dùng khi đánh boss) · ✨ <b>Nhân xu</b>: gấp đôi xu cuối ván';d.insertBefore(ds,last);t.innerHTML='<p style="font-weight:700;color:#bd3193;margin:12px 0 4px">Giao diện</p>';
     TH.forEach(function(h){var own=!h[2]||X.owned[h[0]],on=X.theme===h[0];t.appendChild(mkBtn(h[1]+(on?' ✓':own?'':' — '+h[2]+' xu'),on?'btn-primary':'btn-ghost',function(){if(!own){if(meta.coins<h[2]){sm('Chưa đủ xu!','#dc2626');return;}meta.coins-=h[2];X.owned[h[0]]=1;saveMeta();}X.theme=h[0];sx();applySet();sClick();showShop();}));});
     d.insertBefore(t,last);};
   var _as9=applySet;applySet=function(){_as9();var r=controls.parentNode.parentNode,hu=0;TH.forEach(function(x){if(x[0]&&x[0]===X.theme)hu=x[3];});if(hu)r.style.filter=(r.style.filter?r.style.filter+' ':'')+'hue-rotate('+hu+'deg)';document.documentElement.classList.toggle('vdark',!!meta.set.dark);};
@@ -1389,6 +1427,615 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
   var ipr=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ipr=e;foot.insertBefore(mkBtn('📲 Cài ứng dụng','btn-copy',function(){ipr.prompt();}),foot.firstChild);});
   try{if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
   applySet();
+  // ===== v10: tính năng hấp dẫn hơn =====
+  var SP=[['🪙 +20 xu',30,function(){meta.coins+=20;}],['🪙 +50 xu',25,function(){meta.coins+=50;}],['🪙 +100 xu',12,function(){meta.coins+=100;}],['🛡️ +1 Khiên',10,function(){meta.items.shield++;}],['½ +1 vé 50/50',10,function(){meta.items.half++;}],['❄️ +1 vé +4 giây',10,function(){meta.items.freeze++;}],['💗 +1 Hồi mạng',8,function(){meta.items.heal++;}],['🔄 +1 Đổi câu',8,function(){meta.items.reroll++;}],['💎 JACKPOT +300 xu',3,function(){meta.coins+=300;}]];
+  function showSpin(){clr();sm('');area.innerHTML='';hideControls();st.playing=false;var d=document.createElement('div');d.style.textAlign='center';d.className='fade-in';
+    var h=document.createElement('h2');h.style.cssText='font-size:18px;margin:0 0 8px;color:#bd3193';h.textContent='Vòng quay may mắn hôm nay';
+    var reel=document.createElement('div');reel.style.cssText='font-size:26px;font-weight:700;margin:18px 0;min-height:40px;color:#0891b2';reel.textContent='🎰 ? ? ?';
+    var go=mkBtn('QUAY!','btn-primary',function(){if(X.spinDay===todayKey()){reel.textContent='Mai quay tiếp nhé!';return;}
+      X.spinDay=todayKey();sx();go.disabled=true;sClick();cnt('sp');var tot=0,i;SP.forEach(function(x){tot+=x[1];});var r=_MR()*tot,pick=SP[0];for(i=0;i<SP.length;i++){if(r<SP[i][1]){pick=SP[i];break;}r-=SP[i][1];}
+      pick[2]();saveMeta();var n=0,iv=setInterval(function(){n++;if(!document.body.contains(reel)){clearInterval(iv);return;}
+        if(n<18)reel.textContent=SP[Math.floor(_MR()*SP.length)][0];else{clearInterval(iv);reel.textContent=pick[0];try{sWin();}catch(e){}try{confetti();}catch(e){}}},90);});
+    d.appendChild(h);d.appendChild(reel);d.appendChild(go);d.appendChild(mkBtn('Quay lại','btn-ghost',rstart));area.appendChild(d);}
+  // thẻ thành tích PNG
+  function shareCard(){var c=document.createElement('canvas');c.width=900;c.height=470;var g=c.getContext('2d'),F='Fredoka,"Segoe UI",Arial,sans-serif',gr=g.createLinearGradient(0,0,900,470);gr.addColorStop(0,'#bd3193');gr.addColorStop(1,'#0891b2');g.fillStyle=gr;g.fillRect(0,0,900,470);g.fillStyle='rgba(255,255,255,.14)';g.fillRect(30,30,840,410);g.fillStyle='#fff';g.textAlign='center';
+    g.font='700 34px '+F;g.fillText('5000 THỬ THÁCH HACK NÃO'+(st.hc?' · SINH TỒN':''),450,95);g.font='600 26px '+F;g.fillText((meta.name||'Người chơi')+' · Hạng '+rankOf(st.level)+' · '+getRankTitle(st.score),450,150);
+    g.font='700 150px '+F;g.fillText(String(st.score),450,300);g.font='600 28px '+F;g.fillText('điểm · Cấp '+(st.level+1)+' · Combo ×'+st.maxCombo,450,360);g.font='400 20px '+F;g.fillText(new Date().toLocaleDateString('vi-VN')+(location.host?' · '+location.host:''),450,415);
+    c.toBlob(function(b){if(!b)return;var f=new File([b],'thanh-tich.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],text:shareText()}).catch(function(){});else{var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='thanh-tich.png';a.click();}});}
+  // sinh tồn 1 mạng
+  var _sg10=startGame;startGame=function(sv,mode,pt,o){st.hc=false;_sg10.apply(null,arguments);if(o&&o.hc){st.hc=true;st.kind='hc';st.coinMul=3;st.lives=1;upd();}};
+  var _go10=gover;gover=function(){var hc=st.hc,sc=st.score,c=0;if(hc){c=Math.floor(sc/10)*3;meta.coins+=c;saveMeta();if(sc>(X.hcBest||0)){X.hcBest=sc;sx();}}_go10();cnt('ls');var d=area.firstChild;if(!d)return;
+    if(hc){var n=document.createElement('p');n.style.cssText='font-size:12px;color:#d97706;font-weight:600;margin:6px 0';n.textContent='🔥 Sinh tồn: +'+c+' xu (×3) · Kỷ lục '+X.hcBest;d.appendChild(n);}
+    d.appendChild(mkBtn('🖼 Tải thẻ thành tích','btn-copy',shareCard));};
+  // rương sau boss
+  var _w10=win;win=function(t){var wb=!st.resolved&&!st.over&&st.boss&&st.boss.hp<=1;_w10(t);if(wb&&!st.over){var m,r=_MR();if(r<.6){var n=50+Math.floor(_MR()*101);meta.coins+=n;m='+'+n+' xu';}else{var k=ITM_IDS[Math.floor(_MR()*3)];meta.items[k]++;m='+1 '+ITM[k].n;}saveMeta();toast('🎁 Rương boss: '+m);cnt('ch');}};
+  // nút trang chủ
+  var _rs10=rstart;rstart=function(){_rs10();var d=area.firstChild;if(!d||!d.querySelector('#bestText'))return;var r=d.querySelector('div[style*="flex-wrap"]');if(!r)return;var sp=X.spinDay===todayKey();
+    var b1=mkBtn(sp?'🎰 ĐÃ QUAY HÔM NAY':'🎰 QUAY THƯỞNG','btn-ghost',function(){sClick();showSpin();});if(sp)b1.disabled=true;
+    r.appendChild(b1);r.appendChild(mkBtn('🔥 SINH TỒN'+(X.hcBest?' ('+X.hcBest+')':''),'btn-ghost',function(){sClick();startGame(null,'normal',null,{lock:true,hc:1});}));
+    var n=document.createElement('div');n.style.cssText='font-size:10px;color:#94a3b8;text-align:center;margin:-4px 0 8px';n.textContent='Sinh tồn: 1 mạng, không vật phẩm, xu ×3 · Quay thưởng: 1 lần mỗi ngày';r.parentNode.insertBefore(n,r.nextSibling);};
+  // ===== v11: bộ đếm huy chương, thêm câu hỏi =====
+  function xc(k){return (typeof X==='object'&&X.c&&X.c[k])||0;}
+  function xsum(g){var n=0,ids=g===undefined?Object.keys(X.skill):gids(g);ids.forEach(function(t){var s=X.skill[t];if(s)n+=s[0];});return n;}
+  function cnt(k){X.c[k]=(X.c[k]||0)+1;sx();checkAch();}
+  function addTR(t){t.trim().split('\n').forEach(function(l){var p=l.split('|');if(p.length<5)return;if(TR.some(function(x){return x.q===p[0];}))return;TR.push({q:p[0],a:p[1],w:p.slice(2,5)});});}
+  addTR(`Đại dương nào nhỏ nhất?|Bắc Băng Dương|Ấn Độ Dương|Đại Tây Dương|Thái Bình Dương
+Quốc gia nào có diện tích lớn nhất thế giới?|Nga|Trung Quốc|Canada|Mỹ
+Nước nào đông dân nhất thế giới hiện nay?|Ấn Độ|Trung Quốc|Mỹ|Indonesia
+Thủ đô của Đức là thành phố nào?|Berlin|Munich|Hamburg|Vienna
+Thủ đô của Canada là thành phố nào?|Ottawa|Toronto|Vancouver|Montreal
+Thủ đô của Brazil là thành phố nào?|Brasília|Rio de Janeiro|São Paulo|Buenos Aires
+Núi Phú Sĩ nằm ở nước nào?|Nhật Bản|Hàn Quốc|Trung Quốc|Thái Lan
+Ngôn ngữ chính thức của Brazil là gì?|Tiếng Bồ Đào Nha|Tiếng Tây Ban Nha|Tiếng Anh|Tiếng Pháp
+Sông nào chảy qua thủ đô Paris?|Sông Seine|Sông Thames|Sông Rhine|Sông Danube
+Quốc kỳ Việt Nam có hình gì ở giữa nền đỏ?|Ngôi sao vàng năm cánh|Mặt trời|Bông lúa|Búa liềm
+Quốc ca Việt Nam là bài hát nào?|Tiến quân ca|Quốc tế ca|Giải phóng miền Nam|Việt Nam quê hương tôi
+Ai là tác giả Truyện Kiều?|Nguyễn Du|Nguyễn Trãi|Hồ Xuân Hương|Nguyễn Đình Chiểu
+Ai là tác giả Bình Ngô đại cáo?|Nguyễn Trãi|Nguyễn Du|Lê Lợi|Trần Hưng Đạo
+Vị tướng nào lãnh đạo ba lần chiến thắng quân Nguyên Mông?|Trần Hưng Đạo|Lê Lợi|Quang Trung|Ngô Quyền
+Khởi nghĩa Lam Sơn do ai lãnh đạo?|Lê Lợi|Quang Trung|Lý Thường Kiệt|Trần Quốc Tuấn
+Ngày Quốc khánh Việt Nam là ngày nào?|2/9|30/4|19/5|1/5
+Ngày thống nhất đất nước của Việt Nam là ngày nào?|30/4|2/9|19/8|7/5
+Ngày Nhà giáo Việt Nam là ngày nào?|20/11|20/10|8/3|1/6
+Ngày Quốc tế Thiếu nhi là ngày nào?|1/6|1/5|8/3|20/10
+Ngày Quốc tế Lao động là ngày nào?|1/5|1/6|30/4|2/9
+Bánh chưng thường được gói vào dịp nào?|Tết Nguyên đán|Tết Trung thu|Tết Đoan Ngọ|Lễ Vu lan
+Đàn bầu có mấy dây?|1|2|3|4
+Tiếng Việt có bao nhiêu thanh điệu?|6|5|4|7
+Bảng chữ cái tiếng Việt có bao nhiêu chữ cái?|29|26|24|32
+Cầu Long Biên bắc qua sông nào?|Sông Hồng|Sông Đà|Sông Cầu|Sông Đuống
+Đỉnh Fansipan thuộc dãy núi nào?|Hoàng Liên Sơn|Trường Sơn|Tam Đảo|Ba Vì
+Việt Nam có bao nhiêu dân tộc?|54|50|63|64
+Trái Đất quay quanh Mặt Trời hết bao lâu?|1 năm|1 tháng|1 ngày|1 tuần
+Khí nào chiếm nhiều nhất trong không khí?|Nitơ|Oxy|Cacbonic|Hydro
+Cây xanh hấp thụ khí nào để quang hợp?|Khí cacbonic|Oxy|Nitơ|Hydro
+Công thức hóa học của nước là gì?|H2O|CO2|O2|NaCl
+Công thức hóa học của muối ăn là gì?|NaCl|H2O|CO2|KCl
+Kim loại nào ở thể lỏng ở nhiệt độ phòng?|Thủy ngân|Sắt|Đồng|Nhôm
+Nhiệt độ cơ thể người bình thường khoảng bao nhiêu độ C?|37|30|40|45
+Bộ phận nào của cây hút nước từ đất?|Rễ|Lá|Hoa|Quả
+Loài nào là động vật có vú sống dưới biển?|Cá voi|Cá mập|Cá ngừ|Mực
+Con nào KHÔNG phải côn trùng?|Nhện|Kiến|Ong|Bướm
+Côn trùng có mấy chân?|6|4|8|10
+Ếch con có tên gọi là gì?|Nòng nọc|Cá con|Nhộng|Sâu
+Hành tinh nào có vành đai nổi tiếng nhất?|Sao Thổ|Sao Hỏa|Sao Kim|Sao Thủy
+Hành tinh nào được gọi là hành tinh đỏ?|Sao Hỏa|Sao Kim|Sao Mộc|Sao Thổ
+Cầu vồng thường có mấy màu?|7|5|6|8
+Âm thanh không truyền được trong môi trường nào?|Chân không|Nước|Không khí|Kim loại
+Vật nào hút được sắt?|Nam châm|Cục tẩy|Cây bút nhựa|Tờ giấy
+Con người cần khí nào để thở?|Oxy|Nitơ|Cacbonic|Heli
+Xương nào bảo vệ não?|Xương sọ|Xương sườn|Xương đùi|Xương chậu
+Cơ quan nào lọc máu và tạo ra nước tiểu?|Thận|Gan|Phổi|Dạ dày
+Da tiếp xúc với gì để tạo ra vitamin D?|Ánh nắng|Gió|Nước lạnh|Bóng tối
+Trong một cuộc đua, bạn vượt người thứ hai. Bạn đang đứng thứ mấy?|Thứ hai|Thứ nhất|Thứ ba|Thứ tư
+Số nào lớn hơn?|0,5|0,25|Bằng nhau|Không so sánh được
+7 + 7 ÷ 7 + 7 × 7 = ?|57|105|63|49
+100 − 99 + 1 × 0 = ?|1|0|2|100
+Tháng 2 năm nhuận có bao nhiêu ngày?|29|28|30|31
+Một giờ có bao nhiêu giây?|3600|360|600|6000
+Một tạ bằng bao nhiêu kg?|100|10|1000|50
+Một tấn bằng bao nhiêu kg?|1000|100|10000|500
+Một yến bằng bao nhiêu kg?|10|100|1|5
+Tổng ba góc trong một tam giác bằng bao nhiêu độ?|180|90|360|270
+Hình chữ nhật có mấy góc vuông?|4|2|3|0
+Số chẵn nhỏ nhất có hai chữ số là số nào?|10|12|20|11
+Số La Mã XIV bằng bao nhiêu?|14|16|6|9
+Số La Mã L bằng bao nhiêu?|50|5|100|10
+Mỗi đội bóng đá có bao nhiêu cầu thủ trên sân?|11|9|10|12
+Môn thể thao nào dùng quả cầu có lông vũ?|Cầu lông|Quần vợt|Bóng bàn|Bóng chuyền
+Thế vận hội Olympic mùa hè tổ chức bao nhiêu năm một lần?|4|2|3|5
+Mỗi đội bóng chuyền có mấy người trên sân?|6|5|7|11
+Vận động viên nào giành Huy chương Vàng Olympic đầu tiên cho Việt Nam?|Hoàng Xuân Vinh|Nguyễn Thị Ánh Viên|Trần Hiếu Ngân|Lê Quang Liêm
+Bàn cờ vua có bao nhiêu ô?|64|36|81|100
+Một bộ bài tây (không tính Joker) có bao nhiêu lá?|52|54|48|36
+Nốt nhạc nào đứng ngay sau nốt Mi?|Fa|Rê|Sol|Đô
+Đàn guitar cổ điển thường có mấy dây?|6|4|5|8
+Trộn màu xanh dương với màu vàng được màu gì?|Xanh lá|Tím|Cam|Nâu
+Trộn màu đỏ với màu vàng được màu gì?|Cam|Tím|Xanh lá|Hồng
+Trộn màu đỏ với màu xanh dương được màu gì?|Tím|Cam|Xanh lá|Nâu
+Đèn giao thông màu nào báo hiệu phải dừng lại?|Đỏ|Xanh|Vàng|Trắng
+Trái cây nào được gọi là vua của các loại quả ở Đông Nam Á?|Sầu riêng|Xoài|Chuối|Mít
+Món sushi nổi tiếng của nước nào?|Nhật Bản|Hàn Quốc|Thái Lan|Trung Quốc
+Món kim chi là đặc sản của nước nào?|Hàn Quốc|Nhật Bản|Trung Quốc|Thái Lan
+Pizza có nguồn gốc từ nước nào?|Ý|Pháp|Mỹ|Đức
+Tháp nghiêng Pisa nằm ở nước nào?|Ý|Pháp|Tây Ban Nha|Hy Lạp
+Tượng Nữ thần Tự do nằm ở nước nào?|Mỹ|Pháp|Anh|Canada
+Đấu trường Colosseum nằm ở thành phố nào?|Roma|Athens|Paris|Madrid
+Vạn Lý Trường Thành thuộc nước nào?|Trung Quốc|Nhật Bản|Ấn Độ|Mông Cổ
+Đền Taj Mahal nằm ở nước nào?|Ấn Độ|Pakistan|Thái Lan|Nepal
+Ai là tác giả thuyết tương đối?|Albert Einstein|Isaac Newton|Galileo|Stephen Hawking
+Theo giai thoại, ai nghĩ ra lực hấp dẫn khi thấy quả táo rơi?|Isaac Newton|Albert Einstein|Galileo|Darwin
+Bức tranh Mona Lisa do ai vẽ?|Leonardo da Vinci|Picasso|Van Gogh|Michelangelo
+Ai là tác giả Dế Mèn phiêu lưu ký?|Tô Hoài|Nam Cao|Nguyễn Nhật Ánh|Vũ Trọng Phụng
+Ai là tác giả Tôi thấy hoa vàng trên cỏ xanh?|Nguyễn Nhật Ánh|Tô Hoài|Nguyễn Du|Nam Cao
+Trong 12 con giáp của Việt Nam, con nào đứng đầu?|Chuột|Trâu|Hổ|Rồng
+Trong 12 con giáp của Việt Nam, con nào thay thế con thỏ?|Mèo|Chó|Hổ|Rồng
+Từ Thank you trong tiếng Anh nghĩa là gì?|Cảm ơn|Xin lỗi|Xin chào|Tạm biệt
+Từ Dog trong tiếng Anh nghĩa là gì?|Con chó|Con mèo|Con gà|Con vịt
+Từ Water trong tiếng Anh nghĩa là gì?|Nước|Lửa|Đất|Gió
+Số 7 trong tiếng Anh viết là gì?|Seven|Six|Eleven|Seventeen
+Ký hiệu © thể hiện điều gì?|Bản quyền|Thương hiệu|Giá tiền|Phần trăm
+Tổ hợp phím Ctrl + C dùng để làm gì?|Sao chép|Dán|Cắt|Lưu
+Tổ hợp phím Ctrl + V dùng để làm gì?|Dán|Sao chép|Hoàn tác|In
+Tổ hợp phím Ctrl + Z dùng để làm gì?|Hoàn tác|Dán|Lưu|Tìm kiếm
+Hệ điều hành của iPhone tên là gì?|iOS|Android|Windows|Linux
+Hệ điều hành Android thuộc về công ty nào?|Google|Apple|Microsoft|Samsung
+Cái gì của bạn nhưng người khác dùng nhiều hơn bạn?|Tên của bạn|Điện thoại|Bàn chải|Chiếc xe
+Cái gì càng lau càng ướt?|Cái khăn|Tấm gương|Cái bàn|Tờ giấy
+Ngăn kéo có 5 tất đen, 3 tất trắng. Trong bóng tối cần lấy ít nhất mấy chiếc để chắc chắn có một đôi cùng màu?|3|2|4|5
+Nếu hôm qua là thứ Sáu thì ngày mai là thứ mấy?|Chủ nhật|Thứ Bảy|Thứ Hai|Thứ Sáu
+Hôm nay là thứ Ba. Ba ngày nữa là thứ mấy?|Thứ Sáu|Thứ Năm|Thứ Bảy|Chủ nhật`);
+  // ===== v12: Bạn có biết = giải thích đáp án =====
+  var EX=`tuần có bao nhiêu ngày|1 tuần có 7 ngày nên số ngày bằng số tuần nhân với 7.
+Dùng gì để viết trên bảng đen|Phấn viết trên bảng đen, được làm từ đá vôi hoặc thạch cao.
+4 quả cam chia đều|4 : 2 = 2 nên mỗi bạn được 2 quả.
+Hình vuông có mấy cạnh?|Hình vuông có 4 cạnh bằng nhau và 4 góc vuông.
+con vịt đi trước hai con|Ba con vịt xếp hàng: một con ở đầu, một con ở giữa, một con ở cuối.
+Nếu có 3 quả táo|3 − 1 = 2 quả táo.
+Một năm thường có|Một năm có 12 tháng, gồm 365 ngày.
+1 con vịt có mấy chân|Vịt có 2 chân, chân có màng giúp bơi giỏi.
+Ngày thống nhất đất nước|Ngày 30/4/1975 miền Nam hoàn toàn giải phóng, đất nước thống nhất.
+Một tuần có|Một tuần có 7 ngày: từ thứ Hai đến Chủ nhật.
+Một tá có|1 tá = 12 cái.
+kim chi|Kim chi là rau (thường là cải thảo) muối lên men cay, món quốc hồn của Hàn Quốc.
+Số lớn nhất có một chữ số|9 là chữ số lớn nhất; sau 9 là số 10 có hai chữ số.
+Hành tinh đỏ|Sao Hỏa có màu đỏ vì bề mặt chứa nhiều oxit sắt (gỉ sắt).
+bún nổi tiếng xứ Huế|Bún bò Huế cay, nước dùng đậm vị sả và mắm ruốc.
+100 chia cho 2|Chia đôi một số cũng là nhân với 0,5: 100 chia đôi được 50.
+Trái Đất quay quanh gì|Trái Đất là một hành tinh trong Hệ Mặt Trời và quay quanh Mặt Trời, còn Mặt Trăng quay quanh Trái Đất.
+Một tạ bằng|Đơn vị khối lượng của Việt Nam: 1 yến = 10 kg, 1 tạ = 100 kg, 1 tấn = 1000 kg.
+Một yến bằng|Đơn vị khối lượng của Việt Nam: 1 yến = 10 kg, 1 tạ = 100 kg, 1 tấn = 1000 kg.
+Một tấn bằng|1 tấn = 10 tạ = 100 yến = 1000 kg, nặng cỡ một chiếc ô tô nhỏ.
+Thủ đô của Canada|Ottawa là thủ đô của Canada, dù Toronto và Vancouver đông dân hơn.
+Thủ đô của Đức|Berlin là thủ đô và là thành phố lớn nhất của Đức.
+Thủ đô của Brazil|Brasília là thủ đô được xây dựng từ năm 1956 và khánh thành 1960, không phải Rio hay São Paulo.
+Tháng 2 năm nhuận|Năm nhuận (chia hết cho 4) có thêm ngày 29/2 vì Trái Đất quay quanh Mặt Trời mất khoảng 365,25 ngày.
+Cầu vồng thường|Ánh sáng trắng bị tách qua giọt nước thành 7 màu: đỏ, cam, vàng, lục, lam, chàm, tím.
+trong cầu vồng|Ánh sáng trắng bị tách qua giọt nước thành 7 màu: đỏ, cam, vàng, lục, lam, chàm, tím.
+1 chia cho 2|1 chia 2 bằng 0,5, tức là một nửa.
+quanh Mặt Trời hết bao lâu|Một vòng quanh Mặt Trời mất khoảng 365 ngày, đó là một năm.
+quanh Mặt Trời hết khoảng|Một vòng quanh Mặt Trời mất khoảng 365 ngày, đó là một năm.
+tự quay quanh trục|Trái Đất tự quay một vòng hết khoảng 24 giờ, tạo ra ngày và đêm.
+Cá voi thuộc nhóm|Cá voi thở bằng phổi, đẻ con và nuôi con bằng sữa nên là động vật có vú, không phải cá.
+có lưng mà không ngồi|Con dao có phần sống dao còn gọi là lưng dao.
+Hình lục giác|Lục giác có 6 cạnh, tổ ong được ghép từ các ô lục giác.
+Ngày Nhà giáo|Ngày 20/11 tôn vinh thầy cô giáo, được tổ chức từ năm 1982.
+có răng mà không cắn|Chiếc lược có nhiều răng để chải tóc.
+Tháp Eiffel nằm|Tháp Eiffel ở Paris, hoàn thành năm 1889, cao khoảng 330 m.
+Tháp Eiffel ở|Tháp Eiffel ở Paris, hoàn thành năm 1889, cao khoảng 330 m.
+Tháng nào ngắn nhất|Tháng 2 chỉ có 28 ngày (29 ngày ở năm nhuận).
+đứng ngay sau nốt Mi|Thứ tự bảy nốt nhạc: Đô, Rê, Mi, Fa, Sol, La, Si.
+chim không bay được|Đà điểu là loài chim lớn nhất thế giới, chạy được khoảng 70 km/h dù không bay được.
+Đàn guitar cổ điển|Guitar cổ điển có 6 dây, còn đàn ukulele thường chỉ có 4 dây.
+cây đàn guitar|Guitar cổ điển có 6 dây, còn đàn ukulele thường chỉ có 4 dây.
+Hôm nay thứ Sáu|Sau thứ Sáu là thứ Bảy.
+Loài vật nào cao nhất|Hươu cao cổ cao khoảng 5 đến 6 mét.
+cổ dài sống ở châu Phi|Hươu cao cổ có cổ dài khoảng 2 m nhưng vẫn chỉ có 7 đốt sống cổ giống con người.
+Có 5 con chim|Tiếng súng làm những con chim còn lại bay đi hết, nên trên cây còn 0 con.
+Núi Phú Sĩ|Phú Sĩ cao 3.776 m, là ngọn núi cao nhất Nhật Bản.
+chảy qua thủ đô Paris|Sông Seine (đọc là Xen) chảy ngay giữa Paris.
+1 km bằng|1 km = 1000 m.
+1 đô la Mỹ|1 đô la bằng 100 xu (cent).
+Sân bóng rổ|Rổ bóng rổ treo cao 3,05 m, ghi điểm khi bóng lọt vào rổ.
+ném bóng vào rổ|Bóng rổ do James Naismith sáng tạo năm 1891, ban đầu ném bóng vào giỏ đựng đào.
+ở thể lỏng ở nhiệt độ phòng|Thủy ngân là kim loại duy nhất ở thể lỏng ở nhiệt độ phòng, từng dùng trong nhiệt kế.
+Lục địa nào lớn nhất|Châu Á chiếm khoảng một phần ba diện tích đất liền và có đông dân nhất.
+gắn với truyền thuyết trả gươm|Theo truyền thuyết, vua Lê Lợi trả gươm thần cho Rùa Vàng ở hồ này nên gọi là Hoàn Kiếm.
+có cửa mà không vào|Cửa sổ có cửa nhưng ta không đi qua nó để vào nhà.
+Dế Mèn phiêu lưu ký|Tô Hoài viết Dế Mèn phiêu lưu ký năm 1941, kể về chú dế mèn đi phiêu lưu khắp nơi.
+sushi|Sushi là cơm trộn giấm ăn kèm cá sống hoặc hải sản, đặc sản của Nhật Bản.
+vành đai nổi tiếng|Vành đai của Sao Thổ gồm băng và đá, trải rộng hàng chục nghìn km nhưng rất mỏng.
+Đỉnh Fansipan|Fansipan cao 3.143 m, được gọi là Nóc nhà Đông Dương.
+Đỉnh núi cao nhất Việt Nam|Fansipan cao 3.143 m, được gọi là Nóc nhà Đông Dương.
+giác quan|Năm giác quan: thị giác, thính giác, khứu giác, vị giác và xúc giác.
+đội bóng đá|Mỗi đội có 11 cầu thủ trên sân, gồm cả thủ môn.
+ghi bàn bằng chân|Bóng đá là môn thể thao phổ biến nhất thế giới.
+vua của các loại quả|Sầu riêng nổi tiếng với mùi nồng và vị béo, nên được gọi là vua của các loại trái cây.
+Mỗi ngày có bao nhiêu giờ|Một ngày có 24 giờ, đúng bằng thời gian Trái Đất tự quay một vòng.
+càng dùng càng ngắn|Bút chì mòn dần mỗi lần viết và gọt.
+càng lau càng ướt|Khăn thấm nước từ vật được lau nên càng lau càng ướt.
+ướt khi|Khăn thấm nước từ vật được lau nên càng lau càng ướt.
+Việt Nam có bao nhiêu dân tộc|Việt Nam có 54 dân tộc, đông nhất là người Kinh.
+Con gì thay da|Rắn lột da định kỳ để lớn lên.
+Ký hiệu ©|© là biểu tượng bản quyền (copyright), cho biết tác phẩm được pháp luật bảo vệ.
+Một năm nhuận|Năm nhuận có 366 ngày vì thêm ngày 29/2, cứ 4 năm có một lần.
+trái cây màu đỏ|Táo có nhiều màu, nhưng táo đỏ là loại quen thuộc nhất.
+Một thập kỷ|Thập kỷ là 10 năm, thế kỷ là 100 năm, thiên niên kỷ là 1000 năm.
+Một thế kỷ|Thập kỷ là 10 năm, thế kỷ là 100 năm, thiên niên kỷ là 1000 năm.
+quả cầu|Quả cầu lông làm từ lông ngỗng hoặc nhựa, bay chậm hơn nhiều so với bóng tennis.
+Trộn màu đỏ với màu vàng|Hai màu cơ bản đỏ và vàng trộn lại cho màu cam.
+Màu nào trộn đỏ|Hai màu cơ bản đỏ và vàng trộn lại cho màu cam.
+Đỏ + Vàng|Hai màu cơ bản đỏ và vàng trộn lại cho màu cam.
+Trộn màu đỏ với màu xanh dương|Đỏ trộn xanh dương cho màu tím.
+Đỏ + Xanh dương|Đỏ trộn xanh dương cho màu tím.
+Trộn màu xanh dương với màu vàng|Xanh dương trộn vàng cho màu xanh lá.
+Xanh dương + Vàng|Xanh dương trộn vàng cho màu xanh lá.
+Đỏ + Trắng|Thêm trắng làm màu nhạt đi: đỏ pha trắng cho màu hồng.
+Trắng + Đen|Trắng pha đen cho màu xám.
+cần khí nào để thở|Cơ thể dùng oxy để biến thức ăn thành năng lượng.
+khí để thở|Cơ thể dùng oxy để biến thức ăn thành năng lượng.
+một con vịt đi trước|Ba con vịt xếp hàng: một con ở đầu, một con ở giữa, một con ở cuối.
+Bánh chưng|Bánh chưng gắn với Tết và truyền thuyết Lang Liêu, hình vuông tượng trưng cho đất.
+Bánh vuông gói lá dong|Bánh chưng làm từ gạo nếp, đậu xanh, thịt lợn; hình vuông tượng trưng cho đất.
+Ánh sáng và âm thanh|Ánh sáng đi khoảng 300.000 km/s, âm thanh chỉ khoảng 340 m/s, nên ta thấy chớp trước khi nghe sấm.
+Hệ điều hành Android|Android do Google mua lại và phát triển, chạy trên phần lớn điện thoại hiện nay.
+Nào là số chẵn|Số chẵn là số chia hết cho 2.
+Cây xanh hấp thụ|Lá hấp thụ khí cacbonic và nước để tạo chất dinh dưỡng, đồng thời nhả ra oxy.
+dùng để xem|Mắt là cơ quan thị giác giúp ta nhìn.
+ụt ịt|Lợn (heo) kêu ụt ịt.
+đọc xuôi ngược|Số 121 đọc xuôi hay ngược đều giống nhau, gọi là số đối xứng.
+Quốc khánh Việt Nam|Ngày 2/9/1945 Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập tại Quảng trường Ba Đình.
+Ngày 2/9 kỷ niệm|Ngày 2/9/1945 Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập, khai sinh nước Việt Nam Dân chủ Cộng hòa.
+Quốc hoa của Việt Nam|Hoa sen tượng trưng cho sự thanh cao: mọc từ bùn mà vẫn tỏa hương thơm.
+Tổ hợp phím|Ctrl + C sao chép, Ctrl + X cắt, Ctrl + V dán, Ctrl + Z hoàn tác.
+Một giờ có bao nhiêu giây|1 giờ = 60 phút, mỗi phút 60 giây nên 60 × 60 = 3600 giây.
+quả vàng dài|Chuối chín có vỏ vàng, mọc thành từng nải.
+Nào dài hơn: 1 mét|1 mét = 100 cm nên hai độ dài này bằng nhau.
+Bánh nướng, bánh dẻo|Bánh nướng, bánh dẻo là bánh Trung thu, tượng trưng cho trăng tròn.
+Hình chữ nhật có mấy góc|Hình chữ nhật có 4 góc vuông, mỗi góc 90 độ.
+Bình Ngô đại cáo|Nguyễn Trãi viết năm 1428, được xem là bản tuyên ngôn độc lập thứ hai của dân tộc.
+có cánh mà không bay|Cái quạt có cánh quay nhưng không bay.
+Căn bậc hai của 81|9 × 9 = 81 nên căn bậc hai của 81 là 9.
+Một byte|1 byte gồm 8 bit, đủ để lưu một ký tự như một chữ cái.
+Nước đóng băng|Nước đóng băng ở 0 độ C và sôi ở 100 độ C (ở áp suất thường).
+Nước sôi ở|Nước đóng băng ở 0 độ C và sôi ở 100 độ C (ở áp suất thường).
+chúa sơn lâm|Hổ là loài mèo lớn nhất thế giới, được gọi là chúa sơn lâm.
+chúa tể rừng xanh|Hổ là loài mèo lớn nhất, ở rừng Việt Nam được gọi là chúa sơn lâm; sư tử là vua của savan châu Phi.
+sống được cả trên cạn|Ếch là động vật lưỡng cư: nòng nọc sống dưới nước, ếch trưởng thành sống cả ở nước lẫn trên cạn.
+Thế vận hội Olympic|Olympic mùa hè tổ chức 4 năm một lần, bắt nguồn từ Hy Lạp cổ đại.
+Ngăn kéo có 5 tất|Lấy 3 chiếc thì chắc chắn có 2 chiếc cùng màu vì chỉ có 2 màu (nguyên lý chuồng bồ câu).
+hôm qua là thứ Sáu|Hôm qua thứ Sáu thì hôm nay là thứ Bảy, ngày mai là Chủ nhật.
+Ba ngày nữa|Thứ Ba cộng 3 ngày là Thứ Sáu.
+Con gì ngủ đông|Gấu ngủ đông để tiết kiệm năng lượng khi mùa đông thức ăn khan hiếm.
+hành tinh đỏ|Sao Hỏa có màu đỏ vì bề mặt chứa nhiều oxit sắt (gỉ sắt).
+Công thức hóa học của nước|Mỗi phân tử nước gồm 2 nguyên tử hiđro và 1 nguyên tử oxi.
+Nước có công thức|Mỗi phân tử nước gồm 2 nguyên tử hiđro và 1 nguyên tử oxi.
+Da tiếp xúc|Da tạo vitamin D khi tắm nắng, giúp xương chắc khỏe.
+hút được sắt|Nam châm hút sắt, niken và côban nhờ từ trường.
+Nam châm hút được|Nam châm hút sắt, niken và côban nhờ từ trường.
+Từ Water|Water nghĩa là nước. Khoảng hai phần ba bề mặt Trái Đất được bao phủ bởi nước.
+Tôi thấy hoa vàng|Nguyễn Nhật Ánh viết truyện này, từng được chuyển thành phim cùng tên năm 2015.
+chính thức của Brazil|Brazil từng là thuộc địa Bồ Đào Nha nên nói tiếng Bồ Đào Nha, khác các nước Nam Mỹ nói tiếng Tây Ban Nha.
+Hệ điều hành của iPhone|iOS do Apple phát triển và chỉ chạy trên iPhone.
+Nào nặng hơn: 1kg bông|Cả hai đều nặng 1 kg; bông chỉ chiếm nhiều chỗ hơn vì nhẹ và xốp.
+Côn trùng có mấy chân|Mọi côn trùng đều có 6 chân và cơ thể chia 3 phần: đầu, ngực, bụng.
+Cái gì có 5 ngón|Bàn tay có 5 ngón.
+càng chia sẻ càng nhiều|Niềm vui nhân lên khi được chia sẻ.
+Bao nhiêu mùa ở miền Bắc|Miền Bắc có 4 mùa rõ rệt: xuân, hạ, thu, đông.
+Mặt trăng quay quanh|Mặt Trăng là vệ tinh tự nhiên duy nhất của Trái Đất, chu kỳ quay khoảng 27 ngày.
+có kim mà không|Kim đồng hồ chỉ giờ, phút, giây chứ không dùng để may vá.
+Đàn bầu|Đàn bầu chỉ có một dây, âm thanh thay đổi nhờ cần đàn mềm; đây là nhạc cụ độc đáo của Việt Nam.
+chỉ có một dây|Đàn bầu chỉ có một dây, âm thanh thay đổi nhờ cần đàn mềm; đây là nhạc cụ độc đáo của Việt Nam.
+Con gì thích ăn chuối|Khỉ thường được vẽ cầm chuối, nhưng thức ăn chính còn có lá, quả và côn trùng.
+CPU là viết tắt|CPU là Central Processing Unit, nơi thực hiện hầu hết phép tính của máy tính.
+bộ não của máy tính|CPU xử lý lệnh với hàng tỉ phép tính mỗi giây.
+Huy chương Vàng Olympic đầu tiên|Hoàng Xuân Vinh giành HCV bắn súng ngắn hơi 10 m tại Olympic Rio 2016.
+Con gì có sừng|Bò có sừng, còn chó, mèo, lợn thì không.
+loài bò sát|Rắn là bò sát, còn ếch là lưỡng cư.
+đặt chân lên Mặt Trăng|Neil Armstrong đặt chân lên Mặt Trăng ngày 20/7/1969 trong sứ mệnh Apollo 11.
+tháng có 28 ngày|Tất cả 12 tháng đều có ít nhất 28 ngày.
+meo meo|Mèo kêu meo meo.
+Số La Mã XIV|X = 10, IV = 4 nên XIV = 14.
+Số La Mã L|Số La Mã: I=1, V=5, X=10, L=50, C=100, D=500, M=1000.
+Con gì biết nói|Con người biết nói nhờ bộ não và dây thanh âm phát triển.
+Kimono|Kimono là trang phục truyền thống của Nhật Bản.
+Bố của An|Ba người con tên là Một, Hai và An, nên người con thứ ba chính là An.
+có khi ngủ, mất khi thức|Giấc mơ xuất hiện khi ta ngủ và tan biến khi tỉnh dậy.
+3 con mèo ăn 3 con chuột|Mỗi con mèo ăn 1 con chuột hết 3 phút, nên 1 con mèo ăn 1 con chuột cũng mất 3 phút.
+người khác dùng nhiều hơn|Tên của bạn là của bạn, nhưng người khác gọi nó nhiều hơn chính bạn.
+Bao nhiêu chữ số trong số 100|Số 100 gồm 3 chữ số: 1, 0, 0.
+Số chẵn nhỏ nhất có hai|Số nhỏ nhất có hai chữ số là 10, và 10 chia hết cho 2 nên là số chẵn.
+có 4 chân nhưng|Cái bàn có 4 chân nhưng đứng yên một chỗ.
+Con gì có vòi dài|Voi dùng vòi để thở, uống nước, cầm nắm và ngửi.
+Một tá bằng|1 tá = 12 cái.
+Con gì biết gáy|Gà trống gáy báo sáng.
+Gấu trúc|Gấu trúc sống ở vùng núi Tứ Xuyên (Trung Quốc) và ăn chủ yếu là tre.
+5² bằng|5² = 5 × 5 = 25.
+Từ Dog|Dog nghĩa là con chó.
+1 con bò có mấy chân|Bò là động vật bốn chân.
+Đại dương nào nhỏ nhất|Bắc Băng Dương nhỏ nhất và phần lớn bị băng bao phủ.
+Khởi nghĩa Lam Sơn|Lê Lợi cùng Nguyễn Trãi lãnh đạo khởi nghĩa Lam Sơn (1418 - 1427), đánh đuổi quân Minh.
+Số nào lớn hơn?|0,5 = 5/10 còn 0,25 = 25/100 nên 0,5 lớn hơn.
+1 lít nước|1 lít nước tinh khiết nặng khoảng 1 kg.
+đông dân nhất|Ấn Độ đã vượt Trung Quốc về dân số vào khoảng năm 2023, với hơn 1,4 tỷ người.
+Con vật nào lớn nhất thế giới|Cá voi xanh dài tới khoảng 30 m, là động vật lớn nhất từng được biết.
+Nào là số lẻ|Số lẻ là số không chia hết cho 2.
+Nào là kim loại|Sắt là kim loại: dẫn điện, dẫn nhiệt và bị nam châm hút.
+chạy nhanh nhất|Báo săn có thể chạy tới khoảng 100 km/h trong thời gian ngắn.
+Thank you|Thank you nghĩa là cảm ơn.
+Loài nào là động vật có vú sống dưới biển|Cá voi thở bằng phổi nên phải nổi lên mặt nước để lấy không khí.
+không bao giờ hỏi|Ta bấm chuông cửa và trả lời bằng cách mở cửa.
+Cầu Long Biên|Cầu Long Biên do người Pháp xây năm 1902, bắc qua sông Hồng.
+càng cắt càng to|Lỗ càng bị cắt rộng ra thì càng to.
+Con gì thích ăn cà rốt|Thỏ thích gặm cà rốt và rau.
+Nào là cây ăn quả|Cây cam cho quả cam ăn được.
+Một bộ bài tây|Bộ bài tây có 52 lá chia thành 4 chất: cơ, rô, chuồn (tép), bích.
+8 chia cho 1/2|Chia cho 1/2 là nhân với 2: 8 × 2 = 16.
+30 chia cho 1/2|30 : 1/2 = 60, cộng 10 được 70.
+có tai mà không nghe|Ấm có quai (tai ấm) để cầm.
+đội bóng chuyền|Mỗi đội bóng chuyền có 6 người trên sân, các cầu thủ luân phiên vị trí.
+đập bóng qua lưới|Bóng chuyền: mỗi đội 6 người, được chạm bóng tối đa 3 lần mỗi lượt.
+mang tên vị thần chiến tranh|Sao Hỏa mang tên Mars, thần chiến tranh La Mã, vì có màu đỏ như máu.
+có cổ mà không có đầu|Chai có cổ chai nhưng không có đầu.
+thay thế con thỏ|Ở Việt Nam, con Mèo thường được giải thích là thay cho con Thỏ trong 12 con giáp.
+Mùa nào lạnh nhất|Mùa đông lạnh nhất vì Mặt Trời chiếu nghiêng, ngày ngắn đêm dài.
+Bàn cờ vua|Bàn cờ vua có 8 × 8 = 64 ô.
+Tháng nào có 31 ngày|Các tháng 1, 3, 5, 7, 8, 10, 12 có 31 ngày.
+Quốc tế Lao động|Ngày 1/5 hằng năm là ngày Quốc tế Lao động.
+nguyên âm|Tiếng Việt có 12 nguyên âm đơn: a, ă, â, e, ê, i, o, ô, ơ, u, ư, y.
+Quốc ca Việt Nam|Tiến quân ca do nhạc sĩ Văn Cao sáng tác năm 1944.
+Pizza|Pizza hiện đại ra đời ở thành phố Naples (Ý).
+Số 7 trong tiếng Anh|Seven là số 7, còn Seventeen là 17.
+càng rửa càng bẩn|Nước rửa nhiều thứ nên chính nó càng bẩn.
+hút nước từ đất|Rễ hút nước và muối khoáng từ đất để nuôi cây.
+nhiều phím mà không|Đàn piano có 88 phím nhưng không mở được cửa nào.
+Colosseum|Đấu trường Colosseum ở Roma xây khoảng năm 70 - 80 sau Công nguyên, chứa hơn 50.000 khán giả.
+Số lớn nhất có hai|99 là số lớn nhất có hai chữ số, số liền sau là 100.
+lật ngược 180 độ|Số 0 lật ngược vẫn là số 0.
+nghĩ ra lực hấp dẫn|Newton đưa ra định luật vạn vật hấp dẫn; chuyện quả táo rơi chỉ là giai thoại nổi tiếng.
+đẻ trứng nhưng là động vật có vú|Thú mỏ vịt là một trong số ít loài thú đẻ trứng.
+Xương nào bảo vệ não|Hộp sọ gồm nhiều xương ghép lại để bảo vệ não.
+cộng với chính nó|2 + 2 = 4 và 2 × 2 = 4.
+loài ăn cỏ|Bò ăn cỏ nên có dạ dày nhiều ngăn để tiêu hóa.
+Dùng gì để chải tóc|Lược dùng để chải tóc.
+Con gì có vảy|Cá có vảy để bảo vệ cơ thể.
+Con gà có mấy chân|Gà là loài chim nên có 2 chân.
+Mona Lisa|Leonardo da Vinci vẽ Mona Lisa khoảng năm 1503, hiện được trưng bày ở bảo tàng Louvre (Paris).
+Truyện Kiều|Nguyễn Du viết Truyện Kiều bằng thơ lục bát, gồm 3.254 câu.
+thuyết tương đối|Albert Einstein công bố thuyết tương đối hẹp (1905) và thuyết tương đối rộng (1915).
+Hình gì có 3 cạnh|Tam giác có 3 cạnh và 3 góc.
+vượt người thứ|Vượt người thứ hai thì bạn thế chỗ của họ, tức là đứng thứ hai.
+không chân vẫn đi được|Rắn không có chân nhưng bò bằng cách uốn thân.
+5 + 5 × 2|Nhân chia làm trước, cộng trừ làm sau: 5 + (5 × 2) = 15.
+2 + 2 × 2|Nhân chia làm trước, cộng trừ làm sau: 2 + (2 × 2) = 6.
+7 + 7 ÷ 7|Nhân chia làm trước: 7 + 1 + 49 = 57.
+100 − 99 + 1 × 0|Nhân trước: 1 × 0 = 0; rồi 100 − 99 + 0 = 1.
+luôn đi tới|Ngày mai luôn ở phía trước, khi tới thì đã thành hôm nay.
+luôn đến nhưng|Ngày mai luôn đến nhưng chưa bao giờ là hôm nay.
+Một giờ rưỡi|1 giờ = 60 phút, thêm 30 phút là 90 phút.
+Quốc kỳ Việt Nam|Quốc kỳ nền đỏ sao vàng năm cánh; màu đỏ gợi đến cách mạng và sự hy sinh của các anh hùng.
+vừa chẵn vừa là số nguyên tố|2 là số nguyên tố chẵn duy nhất.
+luôn theo bạn khi có nắng|Cái bóng xuất hiện khi ánh sáng bị người che.
+dạng hình tròn|Bánh xe hình tròn để lăn dễ dàng.
+Quốc kỳ Nhật Bản|Cờ Nhật Bản có hình tròn đỏ tượng trưng cho Mặt Trời, vì Nhật Bản được gọi là Đất nước Mặt Trời mọc.
+Kim chi|Kim chi là rau (thường là cải thảo) muối lên men cay, món quốc hồn của Hàn Quốc.
+KHÔNG phải côn trùng|Nhện có 8 chân và 2 phần cơ thể nên thuộc lớp nhện, không phải côn trùng.
+chạy khắp nơi mà không|Thời gian cứ trôi mãi, không ai giữ lại được.
+Đại dương lớn nhất|Thái Bình Dương chiếm khoảng một phần ba bề mặt Trái Đất.
+Đại dương nào lớn nhất|Thái Bình Dương rộng hơn tổng diện tích tất cả các lục địa cộng lại.
+88 phím|Đàn piano tiêu chuẩn có 52 phím trắng và 36 phím đen, tổng cộng 88 phím.
+bị phá vỡ mà không rơi|Kỷ lục bị phá vỡ khi có người làm tốt hơn.
+luôn ở phía trước bạn|Tương lai luôn ở phía trước nhưng chưa ai nhìn thấy được.
+cường độ dòng điện|Ampe (A) được đặt theo tên nhà vật lý André-Marie Ampère.
+diện tích lớn nhất thế giới|Nga rộng khoảng 17 triệu km².
+càng cháy càng ngắn|Cây nến cháy đến đâu thì ngắn đến đó.
+đi 4 chân, trưa 2 chân|Em bé bò bằng 4 chân, lớn đi bằng 2 chân, già chống gậy nên có chân thứ 3.
+quốc đảo|Nhật Bản gồm nhiều hòn đảo, xung quanh là biển.
+1000 − 1|999 là số liền trước của 1000.
+Vạn Lý Trường Thành|Vạn Lý Trường Thành dài hàng nghìn km, được xây qua nhiều triều đại Trung Quốc.
+Âm thanh không truyền được|Âm thanh cần môi trường vật chất để truyền; trong chân không (vũ trụ) không có âm thanh.
+Đèn giao thông|Đèn đỏ là dừng, đèn vàng là chuẩn bị, đèn xanh là được đi.
+Taj Mahal|Taj Mahal ở Agra (Ấn Độ), làm bằng đá cẩm thạch trắng để tưởng nhớ hoàng hậu.
+túi bụng|Kanguru có túi bụng để nuôi con non.
+cạnh thẳng|Hình tròn chỉ có đường cong, không có cạnh thẳng và không có góc.
+Hình tròn có mấy góc|Hình tròn chỉ có đường cong, không có cạnh thẳng và không có góc.
+chiếm nhiều nhất|Không khí gồm khoảng 78% nitơ và 21% oxy.
+đá quý|Kim cương là vật liệu tự nhiên cứng nhất, làm từ cacbon.
+1/2 hay 1/3|1/2 là chia thành 2 phần bằng nhau nên lớn hơn 1/3.
+Gấp đôi tờ giấy|Mỗi lần gấp, số lớp tăng gấp đôi: 2, 4, 8.
+Chủ tịch Hồ Chí Minh sinh ra|Chủ tịch Hồ Chí Minh sinh năm 1890 tại làng Hoàng Trù (Kim Liên), Nam Đàn, Nghệ An.
+Cơ quan nào lọc máu|Thận lọc máu và thải chất thừa qua nước tiểu.
+nhân với chính nó bằng 49|7 × 7 = 49.
+lãnh đạo ba lần|Trần Hưng Đạo lãnh đạo quân dân nhà Trần ba lần đánh thắng quân Nguyên Mông ở thế kỷ 13.
+Ếch con|Nòng nọc có đuôi, thở bằng mang, dần mọc chân rồi thành ếch.
+Nòng nọc lớn lên|Nòng nọc dần mọc chân, rụng đuôi và trở thành ếch.
+Con gì có 8 chân|Nhện có 8 chân, còn côn trùng chỉ có 6 chân.
+Nhện có mấy chân|Nhện có 8 chân, còn côn trùng chỉ có 6 chân.
+càng lấy đi càng lớn|Càng đào lấy đất đi thì cái hố càng to.
+Quốc tế Thiếu nhi|Ngày 1/6 là ngày Quốc tế Thiếu nhi.
+sau sáp nhập 2025|Từ 1/7/2025, Việt Nam có 34 tỉnh, thành phố sau khi sắp xếp lại đơn vị hành chính.
+Tiếng Việt có bao nhiêu thanh điệu|Sáu thanh điệu: ngang, huyền, sắc, hỏi, ngã, nặng.
+Bảng chữ cái tiếng Việt|Bảng chữ cái tiếng Việt có 29 chữ cái, từ A đến Y.
+Mặt trời mọc ở hướng nào|Trái Đất quay từ tây sang đông nên Mặt Trời mọc ở đông, lặn ở tây.
+Dùng gì để đánh răng|Bàn chải và kem đánh răng giúp làm sạch răng.
+0 nhân với bất kỳ|Bất kỳ số nào nhân với 0 đều bằng 0.
+chia hết cho 7|21 = 7 × 3 nên 21 chia hết cho 7.
+đứng đầu|Chuột (Tý) đứng đầu 12 con giáp; truyền thuyết kể chuột lanh lợi nên về đích trước.
+Cái gì lên thì không xuống|Tuổi chỉ tăng chứ không giảm.
+Số nhỏ nhất có hai|10 là số nhỏ nhất có hai chữ số.
+Số nhỏ nhất có ba|100 là số nhỏ nhất có ba chữ số.
+gần mặt trời nhất|Sao Thủy gần Mặt Trời nhất và là hành tinh nhỏ nhất.
+Tổng ba góc|Trong tam giác phẳng, ba góc luôn cộng lại bằng 180 độ.
+1 phút có|1 phút = 60 giây.
+Có 3 quả cam|Bạn lấy đi 2 quả thì chính bạn đang có 2 quả trong tay.
+lấy đi 2 cái|Bạn lấy đi 2 cái thì chính bạn đang giữ 2 cái.
+Viên gạch nặng|Gọi x là cân nặng viên gạch: x = 1 + x/2 nên x = 2 kg.
+Nhiệt độ cơ thể|Cơ thể người khỏe mạnh khoảng 36,5 đến 37 độ C.
+muối ăn|Muối ăn là natri clorua (NaCl), gồm natri và clo.
+Áo dài|Áo dài là trang phục truyền thống tiêu biểu của Việt Nam.
+mặn nhất|Biển Chết rất mặn nên người có thể nằm nổi trên mặt nước.
+có chân nhưng không biết đi|Cái ghế có chân nhưng đứng yên một chỗ.
+Con gì sống dưới nước|Cá thở bằng mang nên sống dưới nước.
+Mưa rơi từ đâu|Mưa rơi từ các đám mây, nơi hơi nước ngưng tụ thành giọt.
+Ngọn núi cao nhất thế giới|Everest cao khoảng 8.849 m, nằm giữa Nepal và Trung Quốc (Tây Tạng).
+biểu tượng của nước Úc|Kanguru và koala là những biểu tượng của nước Úc.
+nằm giữa châu Âu và châu Mỹ|Đại Tây Dương nằm giữa châu Âu, châu Phi và châu Mỹ.
+Tháp nghiêng Pisa|Tháp nghiêng Pisa ở Ý nghiêng vì nền đất mềm lún không đều.
+Có 12 cái kẹo|12 : 4 = 3.
+gâu gâu|Chó kêu gâu gâu.
+số nguyên tố|Số nguyên tố chỉ chia hết cho 1 và chính nó, ví dụ 7.
+chỉ đi chéo|Quân tượng chỉ đi theo đường chéo.
+Số liền sau của 99|99 + 1 = 100.
+Số liền trước của 1000|1000 − 1 = 999.
+Tượng Nữ thần Tự do|Pháp tặng Mỹ tượng Nữ thần Tự do năm 1886; tượng đứng ở New York.
+Hình vuông có mấy cạnh bằng nhau|Hình vuông có 4 cạnh bằng nhau và 4 góc vuông.
+Kim tự tháp Giza|Kim tự tháp Giza ở Ai Cập được xây cách đây hơn 4.500 năm.
+Kim tự tháp nổi tiếng|Ai Cập có Kim tự tháp Giza, kỳ quan cổ đại duy nhất còn tồn tại.
+đen khi mua|Than củi mua về màu đen, đốt thì đỏ, tàn thì xám.
+mấy mặt trăng|Trái Đất chỉ có 1 Mặt Trăng.
+hình chữ S|Việt Nam có hình chữ S, dài khoảng 1.650 km từ Bắc vào Nam.
+Thủ đô Việt Nam|Hà Nội là thủ đô, có lịch sử hơn 1.000 năm (Thăng Long từ năm 1010).
+có miệng mà không ăn|Con sông có cửa sông (miệng sông) nhưng không ăn.
+ngôn ngữ lập trình|Python do Guido van Rossum tạo ra, tên lấy từ gánh hài Monty Python.
+bao nhiêu phút?|1 ngày có 24 giờ, mỗi giờ 60 phút nên 24 × 60 = 1440 phút.
+bánh xe đạp|Xe đạp có 2 bánh.
+xe đạp có mấy bánh|Xe đạp có 2 bánh.
+Nhà thờ Đức Bà|Nhà thờ Đức Bà Sài Gòn xây bằng gạch đỏ nhập từ Pháp (1877 - 1880).
+Vịnh Hạ Long|Vịnh Hạ Long có hàng nghìn đảo đá vôi, được UNESCO công nhận là Di sản thiên nhiên thế giới.
+Cầu Rồng|Cầu Rồng ở Đà Nẵng dài hơn 600 m, cuối tuần có màn phun lửa và phun nước.
+Cái Răng|Chợ nổi Cái Răng họp trên sông; người bán treo hàng hóa lên cây bẹo để rao.
+Tràng An|Quần thể danh thắng Tràng An là Di sản hỗn hợp văn hóa và thiên nhiên của thế giới.
+Thành nhà Hồ|Thành nhà Hồ xây năm 1397 bằng những khối đá lớn, là Di sản văn hóa thế giới.
+Sa Pa|Sa Pa nổi tiếng với ruộng bậc thang và khí hậu mát mẻ quanh năm.
+Lăng Chủ tịch|Lăng Chủ tịch Hồ Chí Minh ở quảng trường Ba Đình (Hà Nội), khánh thành năm 1975.
+nóng nhất|Sao Kim nóng nhất (khoảng 465 độ C) vì khí quyển dày giữ nhiệt.
+có sự sống mà ta biết|Trái Đất có nước lỏng và khí quyển phù hợp cho sự sống.
+xa Mặt Trời nhất|Sao Hải Vương xa Mặt Trời nhất trong 8 hành tinh, quay một vòng mất khoảng 165 năm.
+Hành tinh lớn nhất|Sao Mộc lớn hơn tổng khối lượng của mọi hành tinh khác cộng lại.
+Cơ quan lớn nhất|Da là cơ quan lớn nhất của cơ thể, nặng khoảng 3 - 4 kg, bảo vệ ta khỏi vi khuẩn.
+điều khiển mọi hoạt động|Não điều khiển suy nghĩ, cảm xúc và vận động, nặng khoảng 1,4 kg.
+Xương dài nhất|Xương đùi dài và chắc nhất cơ thể, chịu trọng lượng của cả người.
+giúp ta hít thở|Phổi trao đổi khí: lấy oxy vào, thải khí cacbonic ra.
+bơm máu|Tim đập khoảng 100.000 lần mỗi ngày để bơm máu đi khắp cơ thể.
+hai bướu|Lạc đà hai bướu chứa mỡ trong bướu, giúp sống lâu mà không cần ăn uống.
+biết bơi nhưng không biết bay|Chim cánh cụt có cánh biến thành chân chèo để bơi, sống chủ yếu ở Nam Bán Cầu.
+bay lùi|Chim ruồi vỗ cánh cực nhanh nên bay lùi và đứng yên giữa không trung được.
+Loài thú nào biết bay|Dơi là loài thú duy nhất thực sự bay được.
+nhảy lên mặt nước|Cá heo là động vật có vú thông minh, thở bằng phổi.
+đổi màu da|Tắc kè hoa đổi màu để giao tiếp và điều chỉnh thân nhiệt, không chỉ để ngụy trang.
+mai cứng|Rùa có thể sống hơn 100 năm, một số loài rùa khổng lồ sống đến 150 năm.
+chậm chạp, sống trên cây|Con lười ngủ khoảng 15 tiếng mỗi ngày và di chuyển rất chậm.
+cá muối|Nước mắm làm từ cá muối ủ nhiều tháng, Phú Quốc là nơi nổi tiếng.
+bột nghệ|Bánh xèo có vỏ vàng giòn nhờ bột gạo pha nghệ; tên gọi mô phỏng tiếng đổ bột xèo xèo.
+pha sữa đặc|Cà phê sữa Việt Nam pha phin với sữa đặc, uống nóng hoặc đá.
+bánh tráng cuốn|Gỏi cuốn là món cuốn tươi, ít dầu mỡ, chấm nước mắm hoặc tương.
+Bánh hình trụ|Bánh tét hình trụ là đặc trưng miền Nam, còn bánh chưng vuông là của miền Bắc.
+bánh phở|Phở là món nước nổi tiếng của Hà Nội, ra đời ở miền Bắc từ đầu thế kỷ 20.
+Bún bò Huế|Bún bò Huế cay, nước dùng đậm vị sả và mắm ruốc.
+6 dây, gảy|Đàn guitar có 6 dây, có thể gảy hoặc quạt.
+dùng dùi|Trống phát ra tiếng khi dùi đánh vào mặt trống.
+ống tre|Sáo trúc làm từ ống tre, âm thanh trong trẻo, thường gắn với làng quê.
+vĩ kéo|Đàn nhị (đàn cò) có hai dây, kéo bằng vĩ.
+bàn và quả bóng nhỏ|Bóng bàn đòi hỏi phản xạ rất nhanh; quả bóng chỉ nặng khoảng 2,7 g.
+gậy đánh bóng nhỏ|Golf chơi trên sân rộng, mục tiêu là đưa bóng vào lỗ bằng ít gậy nhất.
+sa mạc Sahara|Sahara nằm ở Bắc Phi, rộng khoảng 9 triệu km².
+Sa mạc nóng lớn nhất|Sahara là sa mạc nóng lớn nhất; sa mạc lớn nhất nói chung là Nam Cực.
+Brazil nằm ở lục địa|Brazil chiếm gần một nửa diện tích Nam Mỹ.
+lạnh nhất, phủ đầy băng|Châu Nam Cực lạnh nhất, từng ghi nhận khoảng −89 độ C.
+Mạng toàn cầu|Internet kết nối hàng tỉ thiết bị, bắt đầu từ mạng ARPANET cuối thập niên 1960.
+gõ chữ|Bàn phím QWERTY lấy tên từ 6 chữ cái đầu tiên ở hàng trên.
+phát âm thanh ra ngoài|Loa biến tín hiệu điện thành sóng âm.
+Ký hiệu @|Ký hiệu @ (a còng) ngăn cách tên người dùng và tên miền trong địa chỉ email.
+di chuyển con trỏ|Chuột máy tính được Douglas Engelbart phát minh năm 1964, lúc đầu làm bằng gỗ.
+cạp cạp|Vịt kêu cạp cạp và bơi giỏi nhờ chân có màng.
+nhiều trang|Sách chứa tri thức; đọc sách giúp mở mang hiểu biết.
+ăn cỏ, kéo cày|Trâu là người bạn của nhà nông Việt Nam.
+thổi thì phồng|Bong bóng chứa không khí nên phồng, chọc thủng thì xẹp hoặc nổ.
+lấp lánh trên trời|Ngôi sao là quả cầu khí khổng lồ tự phát sáng giống Mặt Trời.
+hai bánh, đạp|Xe đạp có 2 bánh, đạp pedal thì chạy.
+che mưa, che nắng|Cái ô (dù) dùng che mưa, che nắng.
+vỏ xanh, ruột đỏ|Dưa hấu có tới khoảng 92% là nước.
+mai trên lưng|Rùa bò chậm và mai là lớp xương bảo vệ cơ thể.
+đội mào đỏ|Gà trống gáy báo sáng.
+chiếu sáng ban ngày|Mặt Trời là ngôi sao cung cấp ánh sáng và nhiệt cho Trái Đất.
+kêu tích tắc|Đồng hồ treo tường dùng để đo thời gian.
+Gần mực|Câu này khuyên: chọn bạn mà chơi, môi trường ảnh hưởng đến con người.
+Có công mài sắt|Kiên trì mài thanh sắt cũng thành cây kim, ý nói chăm chỉ ắt thành công.
+Uống nước nhớ|Nhắc ta biết ơn người đi trước và cội nguồn.
+Một cây làm chẳng nên non|Đoàn kết tạo nên sức mạnh.
+Lá lành đùm lá|Người may mắn nên giúp đỡ người gặp khó khăn.
+Tốt gỗ hơn tốt nước sơn|Phẩm chất bên trong quan trọng hơn vẻ ngoài.
+Học ăn, học nói|Câu dạy ta học cả lời ăn tiếng nói lẫn cách ứng xử.
+Ăn quả nhớ kẻ trồng|Biết ơn người đã tạo ra thành quả cho mình.
+Thất bại là mẹ|Thất bại giúp ta rút kinh nghiệm để đi đến thành công.
+đại phá quân Thanh|Vua Quang Trung (Nguyễn Huệ) đại phá quân Thanh ở Ngọc Hồi - Đống Đa vào năm 1789.
+Điện Biên Phủ|Chiến thắng Điện Biên Phủ ngày 7/5/1954 kết thúc cuộc kháng chiến chống Pháp.
+Hai Bà Trưng|Hai Bà Trưng khởi nghĩa năm 40, chống ách đô hộ nhà Hán.
+thống nhất đất nước năm nào|Ngày 30/4/1975 miền Nam hoàn toàn giải phóng, đất nước thống nhất.
+Bạch Đằng năm 938|Ngô Quyền dùng cọc ngầm đánh tan quân Nam Hán, mở ra thời kỳ độc lập lâu dài.
+dời đô về Thăng Long|Năm 1010 Lý Thái Tổ ban Chiếu dời đô; Thăng Long chính là Hà Nội ngày nay.
+Hà Nội xưa|Thăng Long nghĩa là rồng bay lên, do vua Lý Thái Tổ đặt tên.
+Băng tan chảy|Băng là nước ở thể rắn; tan chảy lại thành nước.
+Sông Hồng chảy qua|Sông Hồng dài khoảng 1.149 km, bắt nguồn từ Trung Quốc và chảy qua Hà Nội.
+Đảo lớn nhất Việt Nam|Phú Quốc rộng hơn 570 km², là đảo lớn nhất Việt Nam.
+Lũng Cú|Cột cờ Lũng Cú ở Đồng Văn, địa đầu cực Bắc của Tổ quốc.
+Cố đô Huế|Huế là kinh đô triều Nguyễn (1802 - 1945), có Quần thể di tích cố đô là Di sản thế giới.
+Hải Phòng nổi tiếng|Hải Phòng được gọi là Thành phố Hoa phượng đỏ.
+Đà Lạt|Đà Lạt nằm trên cao nguyên Lâm Viên, khí hậu mát mẻ quanh năm.
+KHÔNG giáp đất liền|Việt Nam giáp Trung Quốc, Lào, Campuchia trên đất liền; Thái Lan chỉ có ranh giới trên biển.
+Mũi Cà Mau|Mũi Cà Mau là điểm cực Nam trên đất liền của Việt Nam.
+giáp biển nào ở phía đông|Biển Đông nằm ở phía đông của Việt Nam.
+hình chiếc ủng|Nước Ý có hình chiếc ủng trên bản đồ.
+Đồng tiền của Thái Lan|Baht là đồng tiền của Thái Lan.
+Đồng tiền của Nhật Bản|Yên là đồng tiền của Nhật Bản.
+Châu lục nhỏ nhất|Châu Đại Dương nhỏ nhất, gồm Úc, New Zealand và các đảo Thái Bình Dương.
+Thú lớn nhất trên cạn|Voi châu Phi nặng tới khoảng 6 tấn.
+Tằm nhả ra|Tằm nhả tơ làm kén, từ đó dệt thành lụa.
+ăn lá bạch đàn|Koala ngủ 18 - 20 giờ mỗi ngày và ăn lá bạch đàn.
+Sâu bướm lớn lên|Sâu bướm hóa nhộng rồi mới thành bướm.
+Ong làm ra|Ong hút mật hoa và chế biến thành mật ong.
+Cá heo thở bằng|Cá heo thở bằng phổi nên phải ngoi lên mặt nước.
+biểu tượng hòa bình|Bồ câu cầm cành ô liu là biểu tượng của hòa bình.
+đánh răng ít nhất|Nên đánh răng ít nhất 2 lần mỗi ngày, mỗi lần khoảng 2 phút.
+nếm vị|Lưỡi có hàng nghìn chồi vị giác để nếm.
+bao nhiêu chiếc răng|Người trưởng thành có 32 chiếc răng, kể cả răng khôn.
+giúp xương chắc khỏe|Canxi có nhiều trong sữa, tôm, cua và rau xanh.
+Vitamin C|Vitamin C có nhiều trong cam, chanh, ổi, giúp tăng sức đề kháng.
+uống đủ gì|Cơ thể người có khoảng 60% là nước nên cần uống đủ nước.
+Ông Táo lên chầu|Ngày 23 tháng Chạp cúng ông Táo, cá chép đưa ông Táo về trời.
+Múa lân|Múa lân (sư tử) thường biểu diễn dịp Tết Trung thu để mang lại may mắn.
+Đền Hùng|Giỗ Tổ Hùng Vương vào mùng 10 tháng 3 âm lịch để tưởng nhớ các Vua Hùng.
+vào mùa nào|Tết Nguyên đán vào đầu mùa xuân (khoảng tháng 1 - 2 dương lịch).
+chiếc đàn thần|Cây đàn thần của Thạch Sanh khiến quân giặc phải lui binh.
+Vết Đỏ Lớn|Vết Đỏ Lớn là cơn bão khổng lồ trên Sao Mộc, tồn tại hơn 300 năm.
+Thiên hà chứa|Ngân Hà chứa hàng trăm tỉ ngôi sao, trong đó có Mặt Trời.
+Mặt Trăng che Mặt Trời|Nhật thực xảy ra khi Mặt Trăng đi vào giữa Trái Đất và Mặt Trời.
+Ngôi sao gần Trái Đất nhất|Mặt Trời cách Trái Đất khoảng 150 triệu km.
+Người bay vào vũ trụ|Phi hành gia; Yuri Gagarin là người đầu tiên bay vào vũ trụ năm 1961.
+đến Trái Đất mất|Ánh sáng đi 150 triệu km với tốc độ 300.000 km/s nên mất khoảng 8 phút.
+mấy hành tinh|Có 8 hành tinh: Thủy, Kim, Trái Đất, Hỏa, Mộc, Thổ, Thiên Vương, Hải Vương.
+công an ở Việt Nam|113 là số điện thoại khẩn cấp của công an.
+cứu hỏa ở Việt Nam|114 là số điện thoại của cứu hỏa, cứu nạn.
+cấp cứu y tế|115 là số điện thoại cấp cứu y tế.
+Wi-Fi|Wi-Fi truyền dữ liệu bằng sóng vô tuyến, không cần dây cáp.
+in tài liệu|Máy in biến tập tin trên máy tính thành bản in trên giấy.
+mũ bảo hiểm|Mũ bảo hiểm giúp giảm nguy cơ chấn thương sọ não khi tai nạn.
+Mật khẩu tốt|Mật khẩu dài, kết hợp chữ hoa, chữ thường, số, ký tự và không dùng thông tin cá nhân sẽ khó bị đoán.
+Tết Trung thu (âm lịch)|Tết Trung thu vào rằm tháng 8 âm lịch, trẻ em rước đèn và phá cỗ.
+Quốc tế Phụ nữ|Ngày 8/3 tôn vinh phụ nữ trên toàn thế giới.
+Giáng sinh|Giáng sinh 25/12 kỷ niệm ngày sinh của Chúa Giêsu.
+Ngày Phụ nữ Việt Nam|Ngày 20/10 là Ngày Phụ nữ Việt Nam, kỷ niệm thành lập Hội Liên hiệp Phụ nữ năm 1930.`.trim().split('\n').map(function(l){var i=l.indexOf('|');return [l.slice(0,i),l.slice(i+1)];});
+  var CHM={Au:'Au viết tắt từ aurum, tiếng Latin của vàng',Ag:'Ag từ argentum, tiếng Latin của bạc',Cu:'Cu từ cuprum, tiếng Latin của đồng',Na:'Na từ natrium (natri)',Fe:'Fe từ ferrum, tiếng Latin của sắt',K:'K từ kalium (kali)'};
+  function explain(q,a){var i,m;for(i=0;i<EX.length;i++)if(q.indexOf(EX[i][0])>=0)return EX[i][1];
+    if(m=/^Thủ đô của (.+)\?$/.exec(q))return a+' là thủ đô của '+m[1]+'. Thủ đô là nơi đặt cơ quan đầu não của chính phủ.';
+    if(m=/^Ký hiệu hóa học của (.+)\?$/.exec(q))return 'Ký hiệu hóa học của '+m[1]+' là '+a+'. '+(CHM[a]?CHM[a]+'.':'Ký hiệu hóa học thường là 1 - 2 chữ cái đầu của tên nguyên tố.');
+    if(m=/^Trái nghĩa của "(.+)"\?$/.exec(q))return '"'+m[1]+'" và "'+a+'" là hai từ trái nghĩa. Biết nhiều cặp từ trái nghĩa giúp bạn diễn đạt phong phú hơn.';
+    if(m=/^Tiếng Anh: "(.+)" nghĩa là gì\?$/.exec(q))return '"'+m[1]+'" trong tiếng Anh nghĩa là "'+a.toLowerCase()+'". Học đều mỗi ngày vài từ, một năm bạn có cả nghìn từ!';
+    if(m=/^Điền từ: "(.*)___(.*)"$/.exec(q))return 'Câu đầy đủ là "'+m[1]+a+m[2]+'". Đây là cách nói quen thuộc của người Việt.';
+    if(/^Emoji này là gì/.test(q))return 'Emoji là hình biểu cảm; tên gọi từ tiếng Nhật e (hình) và moji (chữ).';
+    if(/=\s*\?/.test(q)&&/giờ|phút|km|kg|ml|cm|lít|tuần|ngày| m$| g /.test(q.replace(/\s*\?$/,'')+' '))return 'Nhớ nhanh: 1 giờ = 60 phút, 1 kg = 1000 g, 1 km = 1000 m, 1 m = 100 cm, 1 lít = 1000 ml, 1 tuần = 7 ngày.';
+    return '';}
+  function showWhy(ok){var q=st.q4&&st.q4.snap;if(!q)return;var a=q.o[q.c],e=explain(q.q,a);if(!e)return;
+    if(!ok&&st.wrong.length&&st.wrong[st.wrong.length-1].q===st.lastQ)st.wrong[st.wrong.length-1].e='Đáp án: '+a+'. '+e;
+    var f=document.createElement('div');f.style.cssText='margin-top:10px;padding:8px 10px;border-radius:10px;background:rgba(8,145,178,.09);font-size:12px;line-height:1.5;color:#0f172a;text-align:left';
+    var b=document.createElement('b');b.style.color='#0891b2';b.textContent=(ok?'💡 Bạn có biết? ':'✅ Đáp án: '+a+'. 💡 Bạn có biết? ');f.appendChild(b);f.appendChild(document.createTextNode(e));area.appendChild(f);
+    var ms=Math.min(7000,2400+e.length*40);
+    if(ok&&st.winTimer){clearTimeout(st.winTimer);st.winTimer=setTimeout(function(){st.winTimer=null;if(st.mode!=='practice'&&st.level>=TOTAL)uwin();else rlvl();},ms);}
+    else if(!ok&&st.loseTimer){clearTimeout(st.loseTimer);st.loseTimer=setTimeout(function(){st.loseTimer=null;if(!st.over&&(st.lives>0||st.mode==='practice'))rlvl();},ms);}}
+  // ===== v13: bộ câu hỏi Dễ / Thường / Khó theo độ khó =====
+  // Mỗi dòng là một đoạn chữ có trong câu hỏi. Câu khớp danh sách nào thì thuộc bộ đó; không khớp thì lấy mặc định của dạng trò (thường).
+  var TIER_EASY=`100 chia cho 2|Trái Đất quay quanh gì|Dùng gì để|Con gà có mấy chân|1 + 1|Mỗi ngày có bao nhiêu giờ|Hình vuông có mấy cạnh?|Con gì kêu|Con gì thích|Con gì biết gáy|Con gì có sừng|Con gì có vảy|Con gì sống dưới nước|Con gì có vòi|Con gì biết nói|Con gì bốn chân|Con gì ngủ đông|Con gì thay da|Con gì không chân|Cái gì dùng để xem|Cái gì có 5 ngón|Cái gì có răng|Cái gì có kim|Cái gì có tai|Cái gì có cánh|có 4 chân nhưng|Cái gì có chân nhưng|Mưa rơi từ đâu|Mặt trời mọc ở hướng|Mùa nào|Một tuần có|1 tuần có|Một năm thường|Một năm nhuận|Một tá|Một yến|Một giờ rưỡi|1 phút có|Nào là số chẵn|Nào là số lẻ|Nào là kim loại|Nào là cây ăn quả|Nào là loài ăn cỏ|Nào là loài bò sát|Nào là trái cây màu đỏ|Nào là khí để thở|Con người cần khí|Con người có bao nhiêu giác quan|Con người thường nói|Thủ đô Việt Nam|Nước nào có hình chữ S|Tháng nào ngắn nhất|Tháng nào có 31|Hình tròn có mấy góc|Hình gì có 3 cạnh|Hình lục giác|Hình chữ nhật có mấy góc|Vật nào có dạng hình tròn|1 con bò|1 con vịt|Trái đất có mấy mặt trăng|Mặt trăng quay quanh|Số liền sau|Số liền trước|Số lớn nhất có|Số nhỏ nhất có|Bao nhiêu mùa|Bao nhiêu chữ số trong số 100|Một chiếc xe đạp|Từ Dog|Từ Water|Thank you|Số 7 trong tiếng Anh|Nếu có 3 quả táo|Có 3 quả cam|Bạn có 3 cái kẹo|Có 12 cái kẹo|4 quả cam chia|Hôm nay thứ Sáu|Cây gì có quả vàng|Màu nào trộn|Trộn màu|Thủ đô của Pháp|Thủ đô của Nhật|Thủ đô của Anh|Thủ đô của Trung Quốc|Thủ đô của Ý|Thủ đô của Thái Lan|của hiđro|của oxi|của cacbon|Hành tinh có sự sống|Cơ quan nào giúp ta hít|bơm máu|Nhện có mấy chân|Môn thể thao ném bóng|ghi bàn bằng chân|Nhạc cụ dùng dùi|Nhạc cụ có 6 dây|Thiết bị nào|Đèn giao thông|mũ bảo hiểm|đánh răng ít nhất|nếm vị|Cơ thể cần uống|Hệ Mặt Trời có mấy|Ngôi sao gần Trái Đất|Băng tan chảy|Nam châm hút|Nước có công thức|Công thức hóa học của nước|Tháp Eiffel ở thành phố|Việt Nam giáp biển|chiếc đàn thần|Tết Nguyên đán thường vào mùa`.split('|');
+  var TIER_HARD=`7 + 7 ÷ 7|Viên gạch nặng|30 chia cho 1/2|8 chia cho 1/2|Ngăn kéo có 5 tất|Gấp đôi tờ giấy|cộng với chính nó|Căn bậc hai|Một byte|cường độ dòng điện|Colosseum|Thế vận hội|Hoàng Xuân Vinh|Bình Ngô|Lam Sơn|ba lần chiến thắng|Brasília|Thủ đô của Canada|Thủ đô của Úc|Phnom Penh|Jakarta|Viêng Chăn|Quốc ca|Mona Lisa|thuyết tương đối|lực hấp dẫn|đẻ trứng nhưng|mặn nhất|CPU|sau sáp nhập|thanh điệu|Bảng chữ cái tiếng Việt|bao nhiêu dân tộc|đông dân nhất|diện tích lớn nhất|Đại dương nào nhỏ nhất|Taj Mahal|Số La Mã|đen khi mua|bị phá vỡ|nguyên âm|Android|lập trình|đứng đầu|thay thế con thỏ|lên thì không xuống|luôn ở phía trước|luôn đi tới|không bao giờ hỏi|càng lấy đi|càng cắt|càng rửa|Số nào lật ngược|vừa chẵn vừa là số nguyên tố|nhân với chính nó|mang tên vị thần|vành đai|Vết Đỏ|Ký hiệu ©|Ngày thống nhất|con vịt đi trước|dời đô|Bạch Đằng|Biển Chết|Everest|Vạn Lý Trường Thành|Ampe|Ký hiệu @|Chim ruồi|bay lùi|Mật khẩu tốt`.split('|');
+  var TIER_NORM=`của vàng|của bạc|của sắt|Hà Nội xưa|Ngày 2/9|Điện Biên Phủ|Hai Bà Trưng|Quang Trung|thống nhất đất nước năm nào`.split('|');
+  var KDEF={anto:0,eng:0,emoji:0,idiom:0,mix:0,riddle:0,unit:0,food:0,ani2:0,chem:2,hist:2};
+  var TW=[[70,30,0],[20,60,20],[0,25,75]];
+  function qOf(it){return Array.isArray(it)?it[0]:it.q;}
+  function isQA(a){var x=a&&a[0];if(!x)return false;if(Array.isArray(x))return typeof x[0]==='string'&&x[0].length>8&&typeof x[1]==='string'&&(x[2]===undefined||Array.isArray(x[2]));return typeof x==='object'&&typeof x.q==='string'&&typeof x.a==='string'&&Array.isArray(x.w);}
+  function hit(q,L){for(var i=0;i<L.length;i++)if(q.indexOf(L[i])>=0)return true;return false;}
+  function tierOf(it,k){var q=qOf(it);if(hit(q,TIER_HARD))return 2;if(hit(q,TIER_EASY))return 0;if(hit(q,TIER_NORM))return 1;if(/^\d[\d,]* [+−×:] \d[\d,]* = \?$/.test(q))return 0;return KDEF[k]!==undefined?KDEF[k]:1;}
+  function pickTier(){var w=TW[st.lock?1:dv()],r=ri(0,99);return r<w[0]?0:(r<w[0]+w[1]?1:2);}
+  var _dr13=draw;draw=function(k,a){if(!isQA(a))return _dr13(k,a);var t=pickTier(),f=a.filter(function(x){return tierOf(x,k)===t;});
+    if(f.length<3){f=a.filter(function(x){return Math.abs(tierOf(x,k)-t)<=1;});if(f.length<3)return _dr13(k,a);}return _dr13(k+'~'+t,f);};
   loadCustom();syncCustomType();
   upd();rstart();
 })();
