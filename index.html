@@ -336,7 +336,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     var ic=document.createElement('div');ic.style.cssText='font-size:38px;margin-bottom:6px;color:#bd3193;font-weight:700;';ic.textContent='?';
     var h=document.createElement('h2');h.style.cssText='font-size:18px;margin:0 0 6px;';h.textContent='Sẵn sàng hack não?';
     var best=bestScore();
-    var p=document.createElement('p');p.style.cssText='color:#64748b;font-size:11px;line-height:1.7;margin:0 0 4px;';p.innerHTML=TYPES.length+' dạng trò · '+TR.length+'+ câu đố · boss mỗi 100 cấp · '+ACHS.length+' huy chương';
+    var p=document.createElement('p');p.style.cssText='color:#64748b;font-size:11px;line-height:1.7;margin:0 0 4px;';p.innerHTML=TYPES.length+' dạng trò · 1.400+ câu hỏi · boss mỗi 100 cấp · '+ACHS.length+' huy chương';
     var pRank=document.createElement('p');pRank.style.cssText='color:#f59e0b;font-size:11px;font-weight:600;margin:0 0 4px;';pRank.textContent='Mỗi 100 cấp = 1 hạng · phím 1-4 chọn đáp án, Enter sang cấp tiếp';
     var pBest=document.createElement('p');pBest.style.cssText='color:#0891b2;font-size:12px;font-weight:700;margin:0 0 10px;';
     pBest.id='bestText';pBest.textContent=bestText();
@@ -968,7 +968,7 @@ html,body{margin:0;-webkit-text-size-adjust:100%;touch-action:manipulation}body{
     L.forEach(function(x){r.appendChild(mkBtn(x[0],'btn-ghost',function(){sClick();x[1]();}));});
     var bd=mkBtn('ĐỘ KHÓ: '+DN[dv()],'btn-ghost',function(){sClick();meta.set.diff=(dv()+1)%3;saveMeta();bd.textContent='ĐỘ KHÓ: '+DN[dv()];});r.appendChild(bd);w.appendChild(r);return w;}
   var tutDone=false;function tutSeen(){try{return tutDone||localStorage.getItem('voly_tut_v1')==='1';}catch(e){return true;}}
-  function showTutorial(){var T=[['Cách chơi','Mỗi cấp là một thử thách ngẫu nhiên. Làm đúng để lên cấp, sai mất 1 mạng. Hết mạng là thua. Có hơn 120 dạng trò và hàng trăm câu đố nên luôn có cái mới.'],['Combo và Boss','Đúng liên tiếp được điểm thưởng (combo). Mỗi 100 cấp gặp BOSS: phải thắng 3 thử thách liên tiếp. Từ cấp 31, câu trắc nghiệm có thanh thời gian.'],['Vật phẩm','Khiên chặn một lần mất mạng; 50/50 loại 2 đáp án sai; +4 giây thêm giờ; Hồi mạng +1 mạng; Đổi câu lấy câu khác; Gợi ý tô viền đáp án đúng; Qua cấp bỏ cấp không mất mạng; Nhân xu gấp đôi xu cuối ván. Mua bằng xu ở Cửa hàng, nhận thêm từ chuỗi ngày, vòng quay và rương boss.']],i=0;
+  function showTutorial(){var T=[['Cách chơi','Mỗi cấp là một thử thách ngẫu nhiên. Làm đúng để lên cấp, sai mất 1 mạng. Hết mạng là thua. Có hơn 130 dạng trò và hơn 1.400 câu hỏi nên luôn có cái mới.'],['Combo và Boss','Đúng liên tiếp được điểm thưởng (combo). Mỗi 100 cấp gặp BOSS: phải thắng 3 thử thách liên tiếp. Từ cấp 31, câu trắc nghiệm có thanh thời gian.'],['Vật phẩm','Khiên chặn một lần mất mạng; 50/50 loại 2 đáp án sai; +4 giây thêm giờ; Hồi mạng +1 mạng; Đổi câu lấy câu khác; Gợi ý tô viền đáp án đúng; Qua cấp bỏ cấp không mất mạng; Nhân xu gấp đôi xu cuối ván. Mua bằng xu ở Cửa hàng, nhận thêm từ chuỗi ngày, vòng quay và rương boss.']],i=0;
     (function show(){var d=panel(T[i][0]+' ('+(i+1)+'/'+T.length+')',T[i][1]);d.appendChild(mkBtn(i<T.length-1?'Tiếp →':'Bắt đầu!','btn-primary',function(){sClick();if(i<T.length-1){i++;show();}else{tutDone=true;try{localStorage.setItem('voly_tut_v1','1');}catch(e){}rstart();}}));})();}
   var _rs=rstart;rstart=function(){stopSprint();_rs();if(!tutSeen())showTutorial();};
   // ---- thử thách mới
@@ -1321,7 +1321,7 @@ Thiết bị nào dùng để in tài liệu?|Máy in|Máy scan|Loa|Chuột`);
    ['Điểm, combo và hạng',`<p>Mỗi cấp đúng được <b>+10 điểm</b>. Đúng liên tiếp tạo <b>combo</b>: cứ 5 combo được thêm +5 điểm mỗi cấp. Sai một lần là mất combo. Mỗi 100 cấp bạn lên <b>1 hạng</b> và nhận +50 điểm. Điểm cuối ván quyết định danh hiệu, từ "Gà con chưa lông" đến "VUA trò chơi hack não".</p>`],
    ['Boss mỗi 100 cấp',`<p>Cấp 100, 200, 300... là <b>BOSS</b> có 3 máu: bạn phải thắng 3 thử thách liên tiếp và không thể bỏ qua. Mỗi boss có một <b>luật riêng</b>: chỉ 12 giây cho mỗi thử thách, màn hình lật gương, hoặc câu hỏi biến mất sau 3 giây. Hạ boss được +100 điểm, +1 mạng và một <b>rương thưởng</b> (xu hoặc vật phẩm).</p>`],
    ['Các chế độ chơi',`<ul><li><b>Chơi thường</b>: tính điểm, lên bảng xếp hạng.</li><li><b>Luyện tập</b>: chọn nhóm dạng trò muốn rèn, không mất mạng, không tính điểm.</li><li><b>60 giây</b>: làm càng nhiều càng tốt; sai hoặc bỏ qua bị trừ 5 giây; không tạm dừng được.</li><li><b>Sinh tồn</b>: chỉ 1 mạng, không dùng vật phẩm và tạm dừng, nhưng xu nhận được nhân 3. Có kỷ lục riêng.</li><li><b>Thử thách hôm nay và Thách đấu</b>: mọi người chơi cùng một bộ đề, không dùng vật phẩm để công bằng. Có bảng xếp hạng riêng cho ngày và thanh so điểm ngay trong lúc chơi.</li><li><b>Nhiều người</b>: chơi luân phiên trên cùng một máy.</li><li><b>Bộ câu hỏi riêng</b>: tự soạn câu hỏi theo dạng <i>Câu hỏi | Đáp án đúng | Sai 1 | Sai 2 | Sai 3</i>, rồi chia sẻ bằng link hoặc file .txt.</li></ul>`],
-   ['Năm nhóm dạng trò',`<ul><li><b>Toán và số</b>: tính nhẩm, tìm quy luật, tính giờ, so sánh, phần trăm. Mẹo: ước lượng trước, loại đáp án quá lớn hoặc quá nhỏ.</li><li><b>Kiến thức</b>: hơn 300 câu đố mẹo, địa lý, lịch sử, khoa học, văn hóa, động vật, cơ thể, vũ trụ. Câu đố mẹo thường có bẫy, hãy đọc kỹ từng chữ.</li><li><b>Trí nhớ</b>: nhớ số, ô sáng, lật cặp, mật khẩu. Hãy chia nhóm 2-3 chữ số để dễ nhớ.</li><li><b>Phản xạ</b>: nhấn đúng lúc, bắt nút đang né, giữ nút, nhấn đúng ô. Nhấn nhầm một ô là mất mạng.</li><li><b>Chữ và logic</b>: gõ chữ, xếp thứ tự, tìm từ khác loại, suy luận, màu chữ lừa mắt (nhìn màu mực, bỏ qua nghĩa của chữ).</li></ul>`],
+   ['Năm nhóm dạng trò',`<ul><li><b>Toán và số</b>: tính nhẩm, tìm quy luật, tính giờ, so sánh, phần trăm. Mẹo: ước lượng trước, loại đáp án quá lớn hoặc quá nhỏ.</li><li><b>Kiến thức</b>: hơn 1.400 câu hỏi và đố mẹo hack não về thế giới và thủ đô, nguyên tố hóa học, động vật, từ vựng tiếng Anh, dòng thời gian lịch sử, phát minh và tác giả, văn hóa Việt Nam, khoa học, cơ thể, vũ trụ. Trong một ván, câu hỏi kiến thức và phép tính không bị lặp lại. Câu đố mẹo thường có bẫy, hãy đọc kỹ từng chữ.</li><li><b>Trí nhớ</b>: nhớ số, ô sáng, lật cặp, mật khẩu. Hãy chia nhóm 2-3 chữ số để dễ nhớ.</li><li><b>Phản xạ</b>: nhấn đúng lúc, bắt nút đang né, giữ nút, nhấn đúng ô. Nhấn nhầm một ô là mất mạng.</li><li><b>Chữ và logic</b>: gõ chữ, xếp thứ tự, tìm từ khác loại, suy luận, màu chữ lừa mắt (nhìn màu mực, bỏ qua nghĩa của chữ).</li></ul>`],
    ['Bạn có biết? và Ôn tập',`<p>Sau mỗi câu kiến thức, dù đúng hay sai, khung <b>Bạn có biết?</b> sẽ giải thích đáp án và kiến thức liên quan; cấp tiếp theo chờ bạn đọc một chút (bấm "Cấp tiếp theo" để qua ngay). Câu sai được đưa vào <b>Ôn tập</b>: hiện lại sau 1, 3, 7 ngày, làm đúng 4 lần thì xem như đã thuộc. Cuối ván có mục "Xem lại câu sai" kèm giải thích. Có thể tắt trong Cài đặt.</p>`],
    ['Vật phẩm và xu',`<ul><li><b>Khiên</b>: đỡ một lần sai.</li><li><b>50/50</b>: loại 2 đáp án sai.</li><li><b>+4 giây</b>: thêm giờ cho thử thách có đồng hồ.</li><li><b>Hồi mạng</b>: +1 mạng.</li><li><b>Đổi câu</b>: lấy câu khác, không mất gì.</li><li><b>Gợi ý</b>: viền xanh quanh đáp án đúng của câu trắc nghiệm.</li><li><b>Qua cấp</b>: bỏ qua cấp không mất mạng (không dùng khi đánh boss).</li><li><b>Nhân xu</b>: gấp đôi xu nhận cuối ván.</li></ul><p>Cuối mỗi ván cứ 10 điểm được 1 xu. Dùng xu mua vật phẩm và giao diện màu trong <b>Cửa hàng</b>. Vật phẩm không dùng được ở các chế độ có khóa (Sinh tồn, Thử thách, Thách đấu).</p>`],
    ['Quay thưởng và chuỗi ngày',`<p>Mỗi ngày được <b>quay thưởng</b> một lần (xu, vật phẩm hoặc jackpot). Chơi liên tiếp mỗi ngày để duy trì <b>chuỗi ngày</b> nhận vật phẩm, đủ 7 ngày có thưởng tuần. Mỗi ngày có 3 nhiệm vụ nhỏ, hoàn thành được tặng vật phẩm.</p>`],
@@ -2237,11 +2237,9 @@ Chuồn chuồn|Côn trùng|Ăn thịt|1
 Bọ rùa|Côn trùng|Ăn thịt|2`);
   var GRD={'Thú':'Thú nuôi con bằng sữa và thường có lông mao','Chim':'Chim có lông vũ, mỏ và đẻ trứng','Bò sát':'Bò sát có da khô phủ vảy và là động vật máu lạnh','Lưỡng cư':'Lưỡng cư có da ẩm, sống được cả ở nước và trên cạn','Cá':'Cá sống dưới nước và thở bằng mang','Côn trùng':'Côn trùng có 6 chân và cơ thể chia làm 3 phần'},GRS=Object.keys(GRD),ZOO=[];
   var CARN=AN.filter(function(x){return x[2]==='Ăn thịt';}).map(function(x){return x[0];}),HERB=AN.filter(function(x){return x[2]==='Ăn thực vật';}).map(function(x){return x[0];});
-  AN.forEach(function(x){var n=x[0],g=x[1],t=+x[3],others=AN.filter(function(y){return y[1]!==g;}).map(function(y){return y[0];});
-    ZOO.push(mk(n+' thuộc nhóm động vật nào?',g,wr(GRS,g,3),n+' thuộc nhóm '+g.toLowerCase()+'. '+GRD[g]+'.',t));
-    ZOO.push(mk('Con vật nào sau đây thuộc nhóm '+g.toLowerCase()+'?',n,wr(others,n,3),n+' thuộc nhóm '+g.toLowerCase()+'. '+GRD[g]+'.',t));
-    if(x[2]==='Ăn thịt')ZOO.push(mk('Loài nào sau đây là động vật ăn thịt? ('+n+')',n,wr(HERB,n,3),n+' là động vật ăn thịt, còn các loài kia chủ yếu ăn thực vật.',t));
-    if(x[2]==='Ăn thực vật')ZOO.push(mk('Loài nào sau đây chủ yếu ăn thực vật? ('+n+')',n,wr(CARN,n,3),n+' chủ yếu ăn thực vật, còn các loài kia là động vật ăn thịt.',t));});
+  var GRF={'Thú':'nuôi con bằng sữa và thường có lông mao','Chim':'có lông vũ, có mỏ và đẻ trứng','Bò sát':'có da khô phủ vảy và là động vật máu lạnh','Lưỡng cư':'có da ẩm, sống được cả ở nước lẫn trên cạn','Cá':'sống dưới nước và thở bằng mang','Côn trùng':'có 6 chân và cơ thể chia làm 3 phần'};
+  AN.forEach(function(x){var n=x[0],g=x[1];ZOO.push(mk(n+' thuộc nhóm động vật nào?',g,wr(GRS,g,3),n+' thuộc nhóm '+g.toLowerCase()+'. '+GRD[g]+'.',+x[3]));});
+  GRS.forEach(function(g){ZOO.push(mk('Nhóm động vật nào '+GRF[g]+'?',g,wr(GRS,g,3),'Nhóm '+g.toLowerCase()+': '+GRD[g]+'.',1));});
   // --- TỪ VỰNG TIẾNG ANH
   var VO=rows(`apple|quả táo|0
 banana|quả chuối|0
@@ -2583,8 +2581,17 @@ t|tiểu thuyết Ông già và biển cả|Ernest Hemingway|2`);
   // chống trùng câu trong mỗi ván (kiến thức + toán)
   var ARI=/^[\d\s+\-−×÷:=?²,.\/()]+$/;
   var _rl14=rlvl;rlvl=function(){_rl14.apply(null,arguments);if(!st.seenQ||st.paused)return;var n=0;
-    while(true){var q=st.q4&&st.q4.snap;if(!q||!(gids(1).indexOf(st.curType)>=0||ARI.test(q.q)))break;var k=q.q+'|'+q.o[q.c];if(!st.seenQ[k]){st.seenQ[k]=1;break;}if(++n>12){st.dupFail=(st.dupFail||0)+1;break;}_rl14();}};
+    while(true){var q=st.q4&&st.q4.snap;if(!q||!(gids(1).indexOf(st.curType)>=0||ARI.test(q.q)))break;var k=q.q+'|'+q.o[q.c];if(!st.seenQ[k]){st.seenQ[k]=1;break;}if(++n>14){st.dupFail=(st.dupFail||0)+1;break;}st.forceKn=n<=8;st.forceNon=n>8;try{_rl14();}finally{st.forceKn=false;st.forceNon=false;}}};
   var _sg14=startGame;startGame=function(){st.seenQ={};st.dupFail=0;_sg14.apply(null,arguments);if(!st.seenQ){st.seenQ={};st.dupFail=0;}};
+  // ===== v15: kho câu hỏi dùng chung cho các dạng cùng chủ đề + ưu tiên rút lại câu kiến thức =====
+  var TRS={};TR.forEach(function(t){TRS[t.q]=1;});function nd(B){return B.filter(function(it){return !TRS[it[0]];});}
+  CTR=nd(CTR);ELQ=nd(ELQ);ZOO=nd(ZOO);VOC=nd(VOC);TLN=nd(TLN);INV=nd(INV);BRN=nd(BRN);
+  var EXTRA={cap:CTR.filter(function(x){return /^Thủ đô của|là thủ đô của nước nào/.test(x[0]);}),chem:ELQ,eng:VOC,his:TLN,anif:ZOO,an2:ZOO};
+  var _dr15=draw;draw=function(k,a){
+    if(k==='T'&&st.forceNon){var NK=TYPES.filter(function(t){return gids(1).indexOf(t)<0;});return _dr15('Tn',NK);}
+    if(k==='T'&&st.forceKn){var K=gids(1).filter(function(t){return TYPES.indexOf(t)>=0&&!(X.cb&&!st.lock&&CBX.indexOf(t)>=0);});return _dr15('Tk',K);}
+    if(EXTRA[k]&&isQA(a))a=a.concat(EXTRA[k]);return _dr15(k,a);};
+  var _rl15=rlvl;rlvl=function(){_rl15.apply(null,arguments);};
   loadCustom();syncCustomType();
   upd();rstart();
 })();
